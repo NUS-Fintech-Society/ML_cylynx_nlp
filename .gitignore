@@ -1,1 +1,4 @@
-/scraping/data/
+
+.vscode
+__pycache__/
+reddit_old.py
