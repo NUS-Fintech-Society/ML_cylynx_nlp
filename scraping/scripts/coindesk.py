@@ -62,11 +62,23 @@ def coindesk_scrape(entity, start_date, end_date):
     df = pd.DataFrame(data_store)
     return df
 
+def coindesk_scrape_general(start_date, end_date):
+    return coindesk_scrape("", start_date, end_date)
 
-############### Testing ################
+
+##########Testing entity function ##########
 ##entity = 'ethereum'
 ##start_date = datetime(2021, 1, 1)
 ##end_date = datetime(2021, 1, 31,23,59,59)
 ##df = coindesk_scrape(entity, start_date, end_date)
 ##df.to_csv("../data/coindesk_feed/010121_to_310121.csv")
-# ######################################
+########################################
+
+######### Testing general function ########
+##start_date = datetime(2021, 1,22)
+##end_date = datetime(2021, 2, 21,23,59,59)
+##df = coindesk_scrape_general(start_date, end_date)
+##sample = df.sample(n=200,random_state=1)
+##sample["text"] = sample["title"] + " " + sample["excerpt"]
+##sample.to_csv("./sample.csv")
+########################################
