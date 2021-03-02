@@ -1,12 +1,14 @@
 from bs4 import BeautifulSoup
 import requests
-from datetime import datetime
+from datetime import datetime,timedelta
 import pandas as pd
 import numpy as np
 import json
 
 
-def cointelegraph_scrape(entity, start_date, end_date):  
+tags = ["bitcoin","litecoin","business","technology","regulation","altcoin","blockchain",
+        "ripple","ethereum"]
+def cointelegraph_entity_scrape(entity, start_date, end_date):  
     # remove all ' ' characters in url
     entity = entity.replace(' ','+')
 
@@ -18,6 +20,8 @@ def cointelegraph_scrape(entity, start_date, end_date):
     req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}).text
     soup = BeautifulSoup(req, 'html.parser')
     token = soup.find("meta",  attrs={'name':"csrf-token"})['content']
+    print(token)
+
     
     # helper function to retrieve data by entity and page number
     def retrieve_data(entity, page_num, token):
@@ -81,12 +85,64 @@ def cointelegraph_scrape(entity, start_date, end_date):
 
     df = pd.DataFrame(data)
     return df
+
+def cointelegraph_scrape(start_date=datetime.today()-timedelta(hours=48),end_date= datetime.today()):
+    base_url = "http://cointelegraph.com/"
+    data = {'date_time':[], 'title':[], 'excerpt':[], 'article_url':[],'author':[],'text':[]}
+
+
+    for tag in tags:
+        print(f"Scraping tag: {tag}")
+        url = base_url + f"tags/{tag}"
+        req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}).text
+        soup = BeautifulSoup(req, 'html.parser')
+        posts = soup.find_all("a", attrs={"class":"post-card-inline__figure-link"})
+        for post in posts:
+            link = base_url + post["href"]
+            if link in data["article_url"] : continue
+            req = requests.get(link, headers={'User-Agent': 'Mozilla/5.0'}).text
+            soup2 = BeautifulSoup(req, 'html.parser')
+            article = soup2.find("article")
+
+            #Scraping information from article
+            
+            datetime_str = article.find("time").attrs["datetime"]
+            dt = datetime.strptime(datetime_str,"%Y-%m-%d")
+
+            if dt <start_date or dt > end_date:
+                #print(dt)
+                continue
+            data["date_time"].append(datetime_str)
+
+            text = article.find("div",class_ = "post-meta__author-name").text.strip()
+            data["author"].append(text)
+
+            text = article.find("h1",class_ = "post__title").text.strip()
+            data["title"].append(text)
+
+            text = article.find("p",class_ = "post__lead").text.strip()
+            data["excerpt"].append(text)
+
+            data["article_url"].append(link)
+            
+            content = article.find("div",class_ ="post-content")
+            text = content.get_text().strip()
+
+            data["text"].append(text)
     
+
+    return pd.DataFrame(data)
+
+
 import IPython
+# url = "http://cointelegraph.com/tags/bitcoin"
+
+
 # ######################################
+article = cointelegraph_scrape(start_date = datetime.today()-timedelta(weeks=8))
 IPython.embed()
 # ############### testing ################
-entity = 'Ethereum'
-start_date = datetime(2020, 8, 1)
-end_date = datetime(2020, 10, 25, 23, 59, 59)
-df = cointelegraph_scrape(entity, start_date, end_date)
+# entity = 'Ethereum'
+# start_date = datetime(2020, 8, 1)
+# end_date = datetime(2020, 10, 25, 23, 59, 59)
+# df = cointelegraph_entity_scrape(entity, start_date, end_date)

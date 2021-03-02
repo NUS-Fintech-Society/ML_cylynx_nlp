@@ -1,10 +1,11 @@
+import asyncpraw
 import praw
 import pandas as pd
 import requests
 import IPython
 from datetime import datetime,timedelta
 from psaw import PushshiftAPI
-from utils import *
+from .utils import *
 
 
 ### Ideally all this should be placed in a YAML File
@@ -13,18 +14,19 @@ CLIENT_SECRET = "7arVbStENxW_9ERB9rrpXbH3HUYJrQ"
 USER_AGENT = "crypto_scraper by u/data_science_dude"
 subreddit_file = "scraping/data/subreddits.csv"
 
-FIELDS = ['selftext',"title","created"]
+FIELDS = ['selftext',"title","created_utc","permalink","author","subreddit","id"]
 #######################################
 
 
 def get_reddit_instance():
     reddit = praw.Reddit(client_id = CLIENT_ID, 
                          client_secret = CLIENT_SECRET,
-                         user_agent = USER_AGENT)
+                         user_agent = USER_AGENT,
+                         check_for_async = False)
     return reddit
 
 
-def get_subreddits(file_path):
+def get_subreddits(file_path = "./data/subreddits.csv"):
     '''
     Obtain a list of subreddits to look at by reading a .csv file
     '''
@@ -33,14 +35,12 @@ def get_subreddits(file_path):
     return subreddit_list
 
 
-def subreddit_scrape(subreddit,start_date,end_date,limit = 1000):
+def subreddit_scrape(subreddit,limit = 1000):
     """Scrape listings from a particular subreddit
-    The scraping will be using the 
+    The scraping will be using the PRAW api but this API does not allow for searching by datetime
 
     Args:
         subreddit (Subreddit Object): Subreddit Object from the Reddit API Client
-        start_date (datetime):
-        end_date (datetime)
 
     Returns:
         df(pd.DataFrame): DataFrame containing the columns: 
@@ -52,13 +52,14 @@ def subreddit_scrape(subreddit,start_date,end_date,limit = 1000):
     for submission in subreddit.hot(limit = limit):
         entry = {}
         #Convert to dictionary for better indexing 
-        sub_dict= submission.__dict__
+        sub_dict= vars(submission)
         for field in FIELDS:
             entry[field] = sub_dict[field]
         entries.append(entry)
     df = pd.DataFrame.from_dict(entries)
     df["created"] = df['created'].apply(lambda x:datetime.fromtimestamp(x))
-    df.rename({"selftext":"text"})
+    df = df.rename({"selftext":"text"})
+    df["source"] = subreddit.display_name
     return df
 
 def reddit_scrape_by_entity(entity, start_date, end_date):
@@ -76,7 +77,6 @@ def reddit_scrape_by_entity(entity, start_date, end_date):
 
     # initialise api
     api = PushshiftAPI()
-
     # convert datetime to timestamp
     start_epoch = int(start_date.timestamp())
     end_epoch = int(end_date.timestamp())
@@ -140,7 +140,7 @@ def reddit_scrape_by_entity(entity, start_date, end_date):
     return df
 
 
-def reddit_scrape(entity_list, start, end):
+def reddit_entity_scrape(entity_list, start, end):
     '''
     Retrieves posts relating to entitities in entity list from reddit within the stipulated time frame 
 
@@ -169,12 +169,24 @@ def reddit_scrape(entity_list, start, end):
     output_df = output_df.reset_index(drop=True)
     
     return output_df
+
+def reddit_general_scrape():
+    api = get_reddit_instance()
+    sr_names = get_subreddits()
+    dfs = []
+    for sr_name in sr_names:
+        sr = api.subreddit(sr_name)
+        dfs.append(subreddit_scrape(sr))
+    df = pd.concat(dfs)
+    return df
+
+
 # if __name__ == "__main__":
 #     reddit = get_reddit_instance()
 #     subreddit_list = get_subreddits(subreddit_file)
 #     srs = [reddit.subreddit(i) for i in subreddit_list]
 
-start_date = datetime(2020, 10, 15)
-end_date = datetime(2020, 10, 26, 23, 59, 59)
-df = reddit_scrape_by_entity("ethereum",start_date,end_date)
-IPython.embed()
+# start_date = datetime(2020, 10, 15)
+# end_date = datetime(2020, 10, 26, 23, 59, 59)
+# df = reddit_scrape_by_entity("ethereum",start_date,end_date)
+# IPython.embed()
