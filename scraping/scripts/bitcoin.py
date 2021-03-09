@@ -71,6 +71,15 @@ def get_date_string(dt):
     date_string = day + month + year
     return date_string
 
+def bitcoin_general_scrape(start_date, end_date):
+    return bitcoin_scrape("", start_date, end_date)
+
+def save_for_tagging(data, filepath):
+    column_names = ['date_time', 'title', 'excerpt', 'article_url', 'image_url', 'category']
+    data['tagging_text'] = data[['title', 'excerpt']].agg(' '.join, axis=1)
+    data.drop(column_names, axis=1, inplace=True)
+    data.to_csv(filepath + "tagging.csv", header=None, index=None)
+
 ##Testing
 # entity="ethereum"
 # start_date = datetime(2020, 7, 20)
@@ -80,3 +89,7 @@ def get_date_string(dt):
 # name = start + "_to_" + end + ".csv"
 # df = bitcoin_scrape(entity, start_date, end_date)
 # df.to_csv("../data/bitcoin_feed/" + name)
+##Save for labelling
+# start_date = datetime(2021, 1, 1)
+# end_date = datetime(2020, 2, 28)
+# save_for_tagging(bitcoin_general_scrape(start_date, end_date), "../data/bitcoin_feed/")
