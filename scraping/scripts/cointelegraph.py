@@ -13,7 +13,7 @@ def cointelegraph_entity_scrape(entity, start_date, end_date):
     entity = entity.replace(' ','+')
 
     # store data
-    data = {'date_time':[], 'title':[], 'excerpt':[], 'article_url':[], 'image_url':[], 'author':[], 'author_url':[], 'source_id': []}
+    data = {'date_time':[], 'title':[], 'excerpt':[], 'article_url':[], 'image_url':[], 'author':[], 'author_url':[], 'source_id': [],"source":[]}
 
     # retrieve data from url
     url = 'https://cointelegraph.com/search?query=' + entity
@@ -79,6 +79,8 @@ def cointelegraph_entity_scrape(entity, start_date, end_date):
                         source_id = article['id']
                         data['source_id'].append(source_id)
 
+                        data["source"].append("cointelegraph")
+
             # scrape next page
             page_num += 1
             page_data = retrieve_data(entity, page_num, token)
@@ -88,7 +90,7 @@ def cointelegraph_entity_scrape(entity, start_date, end_date):
 
 def cointelegraph_scrape(start_date=datetime.today()-timedelta(hours=48),end_date= datetime.today()):
     base_url = "http://cointelegraph.com/"
-    data = {'date_time':[], 'title':[], 'excerpt':[], 'article_url':[],'author':[],'text':[]}
+    data = {'date_time':[], 'title':[], 'excerpt':[], 'article_url':[],'author':[],'text':[],"source":[]}
 
 
     for tag in tags:
@@ -127,9 +129,9 @@ def cointelegraph_scrape(start_date=datetime.today()-timedelta(hours=48),end_dat
             
             content = article.find("div",class_ ="post-content")
             text = content.get_text().strip()
-
+            data["source"].append("cointelegraph")
             data["text"].append(text)
-    
+            
 
     return pd.DataFrame(data)
 
@@ -139,8 +141,11 @@ import IPython
 
 
 # ######################################
-article = cointelegraph_scrape(start_date = datetime.today()-timedelta(weeks=8))
+article = cointelegraph_scrape(start_date = datetime.today()-timedelta(weeks=32))
+article2 = cointelegraph_entity_scrape(" ",start_date = datetime.today()-timedelta(weeks=32),end_date=datetime.today())
 IPython.embed()
+article.to_csv("scraping/data/cointelegraph_samples.csv",index = False)
+# IPython.embed()
 # ############### testing ################
 # entity = 'Ethereum'
 # start_date = datetime(2020, 8, 1)
