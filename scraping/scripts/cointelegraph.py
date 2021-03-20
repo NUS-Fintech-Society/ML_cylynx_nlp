@@ -13,14 +13,13 @@ def cointelegraph_entity_scrape(entity, start_date, end_date):
     entity = entity.replace(' ','+')
 
     # store data
-    data = {'date_time':[], 'title':[], 'excerpt':[], 'article_url':[], 'image_url':[], 'author':[], 'author_url':[], 'source_id': [],"source":[]}
+    data = {'date_time':[], 'title':[], 'excerpt':[], 'article_url':[], 'image_url':[], 'author':[], 'source_id': [],"source":[]}
 
     # retrieve data from url
     url = 'https://cointelegraph.com/search?query=' + entity
     req = requests.get(url, headers={'User-Agent': 'Mozilla/5.0'}).text
     soup = BeautifulSoup(req, 'html.parser')
     token = soup.find("meta",  attrs={'name':"csrf-token"})['content']
-    print(token)
 
     
     # helper function to retrieve data by entity and page number
@@ -67,8 +66,8 @@ def cointelegraph_entity_scrape(entity, start_date, end_date):
                         article_url = article['url']
                         data['article_url'].append(article_url)
 
-                        author_url = article['author_url']
-                        data['author_url'].append(author_url)
+                        # author_url = article['author_url']
+                        # data['author_url'].append(author_url)
 
                         author = article['author_title']
                         data['author'].append(author)
