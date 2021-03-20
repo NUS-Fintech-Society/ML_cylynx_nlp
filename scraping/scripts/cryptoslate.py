@@ -94,10 +94,10 @@ def cryptoslate_scrape(entity, start_date, end_date):
     df = pd.DataFrame(data)
     return df
 
-def general_cryptoslate_scrape(start_date, end_date):  
+def cryptoslate_scrape_general(start_date, end_date):  
 
     #Store data
-    data = {'source_id':[], 'date_time':[], 'title':[], 'excerpt':[], 'article_url':[], 'image_url':[], 'author':[], 'author_url':[]}
+    data = {'source_id':[], 'date_time':[], 'title':[], 'excerpt':[], 'article_url':[], 'image_url':[], 'author':[], 'author_url':[],'source':[]}
     
 
     #Request and get url
@@ -161,6 +161,7 @@ def general_cryptoslate_scrape(start_date, end_date):
                     article_url = article_details['href']
                     data['title'].append(title_text)
                     data['article_url'].append(article_url)
+                    data['source'].append("cryptoslate")
 
                     # retrieve excerpt
                     excerpt = article.find('p').get_text()
@@ -192,24 +193,24 @@ def get_date_string(dt):
     date_string = day + month + year
     return date_string
 
-############### Testing################
-entity = 'binance'
-start_date = datetime(2020, 1, 1)
-end_date = datetime(2021, 1, 1)
-start = get_date_string(start_date)
-end = get_date_string(end_date)
-name = start + "_to_" + end + ".csv"
-df = cryptoslate_scrape(entity, start_date, end_date)
-df.to_csv("../data/cryptoslate_feed/" + name)
-######################################
+# ############### Testing################
+# entity = 'binance'
+# start_date = datetime(2020, 1, 1)
+# end_date = datetime(2021, 1, 1)
+# start = get_date_string(start_date)
+# end = get_date_string(end_date)
+# name = start + "_to_" + end + ".csv"
+# df = cryptoslate_scrape(entity, start_date, end_date)
+# df.to_csv("../data/cryptoslate_feed/" + name)
+# ######################################
 
-############### General Testing################
-gen_start_date = datetime(2020, 1, 1)
-gen_end_date = datetime(2021, 1, 1)
-gen_start = get_date_string(gen_start_date)
-gen_end = get_date_string(gen_end_date)
-gen_name = "general_" + gen_start + "_to_" + gen_end + ".csv"
-gen_df = general_cryptoslate_scrape(gen_start_date, gen_end_date)
-gen_df['concat'] = gen_df['title'] + ', ' + gen_df['excerpt']
-gen_df.to_csv("../data/cryptoslate_feed/" + gen_name)
-######################################
+# ############### General Testing################
+# gen_start_date = datetime(2020, 1, 1)
+# gen_end_date = datetime(2021, 1, 1)
+# gen_start = get_date_string(gen_start_date)
+# gen_end = get_date_string(gen_end_date)
+# gen_name = "general_" + gen_start + "_to_" + gen_end + ".csv"
+# gen_df = general_cryptoslate_scrape(gen_start_date, gen_end_date)
+# gen_df['concat'] = gen_df['title'] + ', ' + gen_df['excerpt']
+# gen_df.to_csv("../data/cryptoslate_feed/" + gen_name)
+# ######################################
