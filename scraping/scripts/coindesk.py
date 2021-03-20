@@ -6,7 +6,7 @@ import time
 def coindesk_scrape(entity, start_date, end_date):
 
     # dictionary to store the relevant data
-    data_store = {'date_time':[], 'title':[], 'excerpt':[], 'article_url':[],  'author':[], 'image_url':[]}
+    data_store = {'date_time':[], 'title':[], 'excerpt':[], 'article_url':[],  'author':[], 'image_url':[], 'source':[]}
 
     # request and get url
     def retrieve_data(entity, page):
@@ -34,7 +34,7 @@ def coindesk_scrape(entity, start_date, end_date):
                 # retrieve relevant information from article
                 if date_time <= end_date and date_time >= start_date: 
                     data_store['date_time'].append(date_time)
-
+                    data_store["source"].append("coindesk")
                     title = article['title']
                     data_store['title'].append(title)
                 

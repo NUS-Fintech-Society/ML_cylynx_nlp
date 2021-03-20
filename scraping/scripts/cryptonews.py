@@ -78,10 +78,10 @@ def cryptonews_scrape(entity, start_date, end_date):
     df = pd.DataFrame(data)
     return df
 
-def general_cryptonews_scrape(start_date, end_date):
+def cryptonews_scrape_general(start_date, end_date):
 
     #Store data
-    data = {'source_id':[], 'date_time':[], 'title':[], 'excerpt':[], 'article_url':[], 'image_url':[], 'author':[], 'author_url':[]}
+    data = {'source_id':[], 'date_time':[], 'title':[], 'excerpt':[], 'article_url':[], 'image_url':[], 'author':[], 'author_url':[],'source':[]}
     
 
     #Get the html data using the post method
@@ -131,6 +131,7 @@ def general_cryptonews_scrape(start_date, end_date):
                     article_url = "https://cryptonews.com" + article_module.find("a")["href"]
                     title_text = article_module.text
                     data['title'].append(title_text)
+                    data['source'].append('cryptonews')
                     data['excerpt'].append("")
                     data['article_url'].append(article_url)
                     data['source_id'].append('') # no article id avaialble
@@ -171,12 +172,12 @@ def get_date_string(dt):
 # df.to_csv("../data/cryptonews_feed/" + name)
 ########################################
 
-############### General Testing ################
-gen_start_date = datetime(2020, 7, 2)
-gen_end_date = datetime(2021, 3, 2)
-gen_start = get_date_string(gen_start_date)
-gen_end = get_date_string(gen_end_date)
-gen_name = "general_" + gen_start + "_to_" + gen_end + ".csv"
-gen_df = general_cryptonews_scrape(gen_start_date, gen_end_date)
-gen_df.to_csv("../data/cryptonews_feed/" + gen_name)
-#################################################
+# ############### General Testing ################
+# gen_start_date = datetime(2020, 7, 2)
+# gen_end_date = datetime(2021, 3, 2)
+# gen_start = get_date_string(gen_start_date)
+# gen_end = get_date_string(gen_end_date)
+# gen_name = "general_" + gen_start + "_to_" + gen_end + ".csv"
+# gen_df = general_cryptonews_scrape(gen_start_date, gen_end_date)
+# gen_df.to_csv("../data/cryptonews_feed/" + gen_name)
+# #################################################

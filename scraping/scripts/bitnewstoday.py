@@ -78,7 +78,7 @@ def bitnewstoday_scrape_general(start_date, end_date):
     current_date = end_date
 
     # create output dataframe
-    column_names = ["date_time", "title", "excerpt", "article_url", "image_url"]
+    column_names = ["date_time", "title", "excerpt", "article_url", "image_url","source"]
     df = pd.DataFrame(columns = column_names)
 
     prev_results = ''
@@ -133,7 +133,7 @@ def bitnewstoday_scrape_general(start_date, end_date):
             # add information to dataframe
             df = df.append({"date_time": date_time, "title": title_text, \
                 "excerpt": excerpt, "article_url": article_url, \
-                    "image_url": image_url
+                    "image_url": image_url,"source":"bitnewstoday"
                 }, ignore_index=True)
 
         prev_results = results

@@ -88,10 +88,11 @@ def cointelegraph_entity_scrape(entity, start_date, end_date):
     df = pd.DataFrame(data)
     return df
 
-def cointelegraph_scrape(start_date=datetime.today()-timedelta(hours=48),end_date= datetime.today()):
+def cointelegraph_scrape_daily(start_date=datetime.today()-timedelta(hours=24),end_date= datetime.today()):
+    #This function can only be used for short-term since to click "load more articles button" you have 
+    # to use selenium
     base_url = "http://cointelegraph.com/"
     data = {'date_time':[], 'title':[], 'excerpt':[], 'article_url':[],'author':[],'text':[],"source":[]}
-
 
     for tag in tags:
         print(f"Scraping tag: {tag}")
@@ -135,16 +136,13 @@ def cointelegraph_scrape(start_date=datetime.today()-timedelta(hours=48),end_dat
 
     return pd.DataFrame(data)
 
+def cointelegraph_scrape_general(start_date,end_date):
+    return cointelegraph_entity_scrape("crypto",start_date,end_date)
 
-import IPython
 # url = "http://cointelegraph.com/tags/bitcoin"
 
 
-# ######################################
-article = cointelegraph_scrape(start_date = datetime.today()-timedelta(weeks=32))
-article2 = cointelegraph_entity_scrape(" ",start_date = datetime.today()-timedelta(weeks=32),end_date=datetime.today())
-IPython.embed()
-article.to_csv("scraping/data/cointelegraph_samples.csv",index = False)
+# #####################################
 # IPython.embed()
 # ############### testing ################
 # entity = 'Ethereum'
