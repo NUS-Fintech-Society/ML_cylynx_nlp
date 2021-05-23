@@ -1,0 +1,3 @@
+model_config:
+  ner_model_path: "./prediction/models/ner-model.pt"
+  sent_model_path: "./prediction/models/sent-model.bin"
