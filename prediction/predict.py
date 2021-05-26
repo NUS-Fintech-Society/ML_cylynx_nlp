@@ -1,6 +1,6 @@
 from flair.data import Sentence
 from flair.models import SequenceTagger
-from simpletransformers.classification import ClassificationModel
+from simpletransformers.classification import ClassificationModel,ClassificationArgs
 from scipy.special import softmax
 import yaml
 
@@ -21,18 +21,24 @@ class Predictor(object):
         return model
 
     def load_sent_model(self,path):
+        
+        #TODO: Put Model Arguments into the config file
+        args = ClassificationArgs()
+        args.dynamic_quantize = False #Using Dynamic Quantization to facilitate model speedup
         model = ClassificationModel(model_type="roberta",model_name = path, 
-                                    use_cuda=False)
+                                    use_cuda=False,args = args)
         return model
         
-    def predict(self,data):
-        if data.isinstance(str) or len(data) == 1:
-            return predict_single(data)
-        else:
-            return predict_batch(data)
-            
+
 
     def predict_single(self,text):
+        """
+        Perform prediction on a single text entry
+        Returns:
+            output: dict
+            output["ner"] - NER output
+            output["risk"] - Risk score in %
+        """
         output = {}
         
         #NER Inference
@@ -41,23 +47,55 @@ class Predictor(object):
         output["ner"] = sentence.to_dict(tag_type="ner")
 
         #Risk Analysis Inference
-        pred,output = self.sent_model.predict(text)
-        prob = softmax(output,axis=1)
+        assert isinstance(text,str)
+        pred,sent_output = self.sent_model.predict([text]) # Need to wrap text in a list else it will perform inference on characters
+        prob = softmax(sent_output,axis=1)
         prob_risk =[x[1] for x in prob]
         pred_risk = [100*i for i in prob_risk]
-        output["risk"] = pred_risk[0] #Assume single entry
         
+         #Assume single entry
+        output["risk"] = pred_risk[0]
         return output 
 
     def predict_batch(self,docs):
-        outputs = []
-        for doc in docs:
-            outputs.append(self.predict_single(doc))
-        return outputs
+        """
+        Roberta Model can be parallelized rather well. More efficient to perform inference as a batch
+        Parameters:
+            docs: List[str]
+        Returns:
+            outputs: List[Dict]
+        """
+        sentences = [Sentence(i) for i in docs]
+        self.ner_model.predict(sentences)
+        ner_output= [sentence.to_dict(tag_type="ner") for sentence in sentences]
+
+        pred,sent_output = self.sent_model.predict(docs)
+        prob = softmax(sent_output,axis=1)
+        prob_risk =[x[1] for x in prob]
+        pred_risk = [100*i for i in prob_risk]
+
+        output = [{**ner_out,"risk":i} for ner_out,i in zip(ner_output,pred_risk)]
+        return output
+
         
     def load_model_params(self):
+        
         config_path = "./cfg.yaml"
         return yaml.load(open(config_path))["model_config"]
 
 
 
+def predict(data):
+    """
+    General Predict Function that can be used to perform inference
+    Parameters:
+        data (str) or List[str]: data to be analysed 
+    """
+    predictor = Predictor()
+    if isinstance(data,str):
+        return predictor.predict_single(data)
+    elif isinstance(data,list):
+        return predictor.predict_batch(data)
+    else:
+        return
+            

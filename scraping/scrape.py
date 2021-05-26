@@ -32,7 +32,7 @@ def news_scrape_general(start_date,end_date,dir_name="./scraping/data/"):
     
     #TODO General Scraping Functions for insidebitcoins and nulltx
 
-    scrapers = [eval(i+"_scrape_general") for i in sources]
+    scrapers = [eval(i+"_scrape_general") for i in sources] #Fetch the relevant scraper function from the news sources
     news_df = [scraper(start_datetime,end_datetime) for scraper in scrapers]
     news_df = pd.concat(news_df)
     filename = dir_name + f"{start_date}_to_{end_date}.csv"
@@ -57,6 +57,7 @@ def main(args):
 
 
 if __name__ == "__main__":
+    # Script will save data in a .csv form if run using command line
     parser  = argparse.ArgumentParser(description='Script to Scrape News Sources and save as .csv')
     parser.add_argument("start_date",type=str,help="Start Date of Scraping in YYYY-MM-DD format",
                         nargs="?")
