@@ -9,3 +9,5 @@ Untitled.ipynb
 misc/
 scraping/data/
 
+*/pytorch_model.bin
+*/ner-model.pt

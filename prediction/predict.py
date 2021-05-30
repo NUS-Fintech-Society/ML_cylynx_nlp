@@ -9,7 +9,7 @@ class Predictor(object):
     def __init__(self,):
 
         config = self.load_model_params()
-
+        print(config)
         ner_model_path = config.get("ner_model_path","")
         sent_model_path = config.get("sent_model_path","")
         self.ner_model = self.load_ner_model(ner_model_path)
@@ -24,7 +24,7 @@ class Predictor(object):
         
         #TODO: Put Model Arguments into the config file
         args = ClassificationArgs()
-        args.dynamic_quantize = False #Using Dynamic Quantization to facilitate model speedup
+        args.dynamic_quantize = True#Using Dynamic Quantization to facilitate model speedup
         model = ClassificationModel(model_type="roberta",model_name = path, 
                                     use_cuda=False,args = args)
         return model
@@ -81,7 +81,7 @@ class Predictor(object):
     def load_model_params(self):
         
         config_path = "./cfg.yaml"
-        return yaml.load(open(config_path))["model_config"]
+        return yaml.load(open(config_path),Loader=yaml.Loader)["model_config"]
 
 
 

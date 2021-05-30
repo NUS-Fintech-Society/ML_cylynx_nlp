@@ -1,0 +1,753 @@
+2021-05-26 05:55:39,313 INFO - Starting the scheduler
+2021-05-26 05:55:39,315 INFO -  * Running on http://0.0.0.0:8793/ (Press CTRL+C to quit)
+2021-05-26 05:55:39,313 INFO - Processing each file at most -1 times
+2021-05-26 05:55:39,321 INFO - Launched DagFileProcessorManager with pid: 12558
+2021-05-26 05:55:39,323 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 05:55:39,332 INFO - Configured default timezone Timezone('UTC')
+2021-05-26 06:00:39,509 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 06:05:39,674 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 06:08:36,204 ERROR - Exception when executing SchedulerJob._run_scheduler_loop
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1277, in _execute_context
+    cursor, statement, parameters, context
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/engine/default.py", line 608, in do_execute
+    cursor.execute(statement, parameters)
+sqlite3.OperationalError: no such table: dag
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/airflow/jobs/scheduler_job.py", line 1286, in _execute
+    self._run_scheduler_loop()
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/airflow/jobs/scheduler_job.py", line 1379, in _run_scheduler_loop
+    num_queued_tis = self._do_scheduling(session)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/airflow/jobs/scheduler_job.py", line 1475, in _do_scheduling
+    self._create_dagruns_for_dags(guard, session)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/airflow/utils/retries.py", line 76, in wrapped_function
+    for attempt in run_with_db_retries(max_retries=retries, logger=logger, **retry_kwargs):
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/tenacity/__init__.py", line 390, in __iter__
+    do = self.iter(retry_state=retry_state)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/tenacity/__init__.py", line 368, in iter
+    raise retry_exc.reraise()
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/tenacity/__init__.py", line 186, in reraise
+    raise self.last_attempt.result()
+  File "/usr/lib/python3.6/concurrent/futures/_base.py", line 425, in result
+    return self.__get_result()
+  File "/usr/lib/python3.6/concurrent/futures/_base.py", line 384, in __get_result
+    raise self._exception
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/airflow/utils/retries.py", line 85, in wrapped_function
+    return func(*args, **kwargs)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/airflow/jobs/scheduler_job.py", line 1566, in _create_dagruns_for_dags
+    self._create_dag_runs(query.all(), session)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/orm/query.py", line 3373, in all
+    return list(self)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/orm/query.py", line 3535, in __iter__
+    return self._execute_and_instances(context)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/orm/query.py", line 3560, in _execute_and_instances
+    result = conn.execute(querycontext.statement, self._params)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1011, in execute
+    return meth(self, multiparams, params)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/sql/elements.py", line 298, in _execute_on_connection
+    return connection._execute_clauseelement(self, multiparams, params)
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1130, in _execute_clauseelement
+    distilled_params,
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1317, in _execute_context
+    e, statement, parameters, cursor, context
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1511, in _handle_dbapi_exception
+    sqlalchemy_exception, with_traceback=exc_info[2], from_=e
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/util/compat.py", line 182, in raise_
+    raise exception
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/engine/base.py", line 1277, in _execute_context
+    cursor, statement, parameters, context
+  File "/home/ubuntu/.local/lib/python3.6/site-packages/sqlalchemy/engine/default.py", line 608, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: dag
+[SQL: SELECT dag.dag_id AS dag_dag_id, dag.root_dag_id AS dag_root_dag_id, dag.is_paused AS dag_is_paused, dag.is_subdag AS dag_is_subdag, dag.is_active AS dag_is_active, dag.last_parsed_time AS dag_last_parsed_time, dag.last_pickled AS dag_last_pickled, dag.last_expired AS dag_last_expired, dag.scheduler_lock AS dag_scheduler_lock, dag.pickle_id AS dag_pickle_id, dag.fileloc AS dag_fileloc, dag.owners AS dag_owners, dag.description AS dag_description, dag.default_view AS dag_default_view, dag.schedule_interval AS dag_schedule_interval, dag.concurrency AS dag_concurrency, dag.has_task_concurrency_limits AS dag_has_task_concurrency_limits, dag.next_dagrun AS dag_next_dagrun, dag.next_dagrun_create_after AS dag_next_dagrun_create_after 
+FROM dag 
+WHERE dag.is_paused IS 0 AND dag.is_active IS 1 AND dag.next_dagrun_create_after <= CURRENT_TIMESTAMP ORDER BY dag.next_dagrun_create_after
+ LIMIT ? OFFSET ?]
+[parameters: (10, 0)]
+(Background on this error at: http://sqlalche.me/e/13/e3q8)
+2021-05-26 06:08:37,222 INFO - Sending Signals.SIGTERM to GPID 12558
+2021-05-26 06:08:37,399 INFO - Process psutil.Process(pid=12558, status='terminated', exitcode=0, started='05:55:38') (12558) terminated with exit code 0
+2021-05-26 06:08:37,400 INFO - Exited execute loop
+2021-05-26 06:09:56,232 INFO - Starting the scheduler
+2021-05-26 06:09:56,233 INFO - Processing each file at most -1 times
+2021-05-26 06:09:56,240 INFO - Launched DagFileProcessorManager with pid: 16420
+2021-05-26 06:09:56,242 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 06:09:56,258 INFO - Configured default timezone Timezone('UTC')
+2021-05-26 06:14:56,327 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 06:19:56,378 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 06:24:54,852 INFO - 3 tasks up for execution:
+	<TaskInstance: my_simple_dag.say_Hi 2021-05-26 06:21:54.418538+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2021-05-26 06:22:57.868056+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:00:00+00:00 [scheduled]>
+2021-05-26 06:24:54,857 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 3 task instances ready to be queued
+2021-05-26 06:24:54,858 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:24:54,860 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:24:54,862 INFO - DAG my_simple_dag has 2/16 running and queued tasks
+2021-05-26 06:24:54,863 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:00:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2021-05-26 06:21:54.418538+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2021-05-26 06:22:57.868056+00:00 [scheduled]>
+2021-05-26 06:24:54,869 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 10, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:24:54,869 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:24:54,870 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2021, 5, 26, 6, 21, 54, 418538, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:24:54,870 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2021-05-26T06:21:54.418538+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:24:54,870 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2021, 5, 26, 6, 22, 57, 868056, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:24:54,871 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2021-05-26T06:22:57.868056+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:24:54,883 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:24:56,903 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2021-05-26T06:21:54.418538+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:24:59,164 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2021-05-26T06:22:57.868056+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:01,244 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 10:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:01,245 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2021-05-26 06:21:54.418538+00:00 exited with status success for try_number 1
+2021-05-26 06:25:01,245 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2021-05-26 06:22:57.868056+00:00 exited with status success for try_number 1
+2021-05-26 06:25:01,324 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 06:25:01,342 INFO - Reset the following 3 orphaned TaskInstances:
+	<TaskInstance: my_simple_dag.greet 2021-05-26 06:21:54.418538+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2021-05-26 06:22:57.868056+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:00:00+00:00 [scheduled]>
+2021-05-26 06:25:01,655 INFO - 4 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2021-05-26 06:21:54.418538+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2021-05-26 06:22:57.868056+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:00:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:10:00+00:00 [scheduled]>
+2021-05-26 06:25:01,667 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 4 task instances ready to be queued
+2021-05-26 06:25:01,669 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:01,670 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:01,676 INFO - DAG my_simple_dag has 2/16 running and queued tasks
+2021-05-26 06:25:01,677 INFO - DAG my_simple_dag has 3/16 running and queued tasks
+2021-05-26 06:25:01,681 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:10:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:00:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2021-05-26 06:21:54.418538+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2021-05-26 06:22:57.868056+00:00 [scheduled]>
+2021-05-26 06:25:01,688 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 10, 10, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:01,689 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:01,689 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 10, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:01,689 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:01,696 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2021, 5, 26, 6, 21, 54, 418538, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:01,702 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2021-05-26T06:21:54.418538+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:01,702 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2021, 5, 26, 6, 22, 57, 868056, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:01,702 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2021-05-26T06:22:57.868056+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:01,721 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:04,977 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:08,306 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2021-05-26T06:21:54.418538+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:10,335 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2021-05-26T06:22:57.868056+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:12,678 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 10:10:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:12,679 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 10:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:12,679 INFO - Executor reports execution of my_simple_dag.greet execution_date=2021-05-26 06:21:54.418538+00:00 exited with status success for try_number 1
+2021-05-26 06:25:12,679 INFO - Executor reports execution of my_simple_dag.greet execution_date=2021-05-26 06:22:57.868056+00:00 exited with status success for try_number 1
+2021-05-26 06:25:12,860 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:10:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:20:00+00:00 [scheduled]>
+2021-05-26 06:25:12,874 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:25:12,876 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:12,878 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:12,880 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:20:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:10:00+00:00 [scheduled]>
+2021-05-26 06:25:12,885 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 10, 20, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:12,886 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:12,887 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 10, 10, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:12,888 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:12,896 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:15,216 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:17,315 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 10:20:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:17,315 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 10:10:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:17,581 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:20:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:30:00+00:00 [scheduled]>
+2021-05-26 06:25:17,586 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:25:17,588 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:17,589 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:17,590 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:30:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:20:00+00:00 [scheduled]>
+2021-05-26 06:25:17,596 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 10, 30, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:17,596 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:17,596 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 10, 20, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:17,597 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:17,608 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:19,764 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:21,887 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 10:30:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:21,888 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 10:20:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:22,040 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 10:00:00+00:00: scheduled__2018-09-24T10:00:00+00:00, externally triggered: False> failed
+2021-05-26 06:25:22,052 ERROR - Marking run <DagRun my_simple_dag @ 2021-05-26 06:21:54.418538+00:00: manual__2021-05-26T06:21:54.418538+00:00, externally triggered: True> failed
+2021-05-26 06:25:22,063 ERROR - Marking run <DagRun my_simple_dag @ 2021-05-26 06:22:57.868056+00:00: manual__2021-05-26T06:22:57.868056+00:00, externally triggered: True> failed
+2021-05-26 06:25:22,095 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:30:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:40:00+00:00 [scheduled]>
+2021-05-26 06:25:22,099 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:25:22,101 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:22,102 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:22,104 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:40:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:30:00+00:00 [scheduled]>
+2021-05-26 06:25:22,112 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 10, 40, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:22,112 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:22,112 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 10, 30, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:22,112 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:22,120 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:24,409 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:26,449 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 10:40:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:26,449 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 10:30:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:26,584 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 10:10:00+00:00: scheduled__2018-09-24T10:10:00+00:00, externally triggered: False> failed
+2021-05-26 06:25:26,614 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:40:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:50:00+00:00 [scheduled]>
+2021-05-26 06:25:26,617 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:25:26,619 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:26,620 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:26,622 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 10:50:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:40:00+00:00 [scheduled]>
+2021-05-26 06:25:26,629 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 10, 50, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:26,629 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:26,630 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 10, 40, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:26,630 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:26,638 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T10:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:28,716 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:30,645 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 10:50:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:30,646 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 10:40:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:30,794 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 10:20:00+00:00: scheduled__2018-09-24T10:20:00+00:00, externally triggered: False> failed
+2021-05-26 06:25:30,824 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:50:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:00:00+00:00 [scheduled]>
+2021-05-26 06:25:30,831 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:25:30,834 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:30,835 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:30,837 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:00:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 10:50:00+00:00 [scheduled]>
+2021-05-26 06:25:30,844 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 11, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:30,844 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:30,844 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 10, 50, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:30,844 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:30,852 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:32,866 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T10:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:34,889 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 11:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:34,890 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 10:50:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:35,022 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 10:30:00+00:00: scheduled__2018-09-24T10:30:00+00:00, externally triggered: False> failed
+2021-05-26 06:25:35,053 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:00:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:10:00+00:00 [scheduled]>
+2021-05-26 06:25:35,058 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:25:35,060 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:35,061 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:35,063 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:10:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:00:00+00:00 [scheduled]>
+2021-05-26 06:25:35,072 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 11, 10, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:35,072 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:35,072 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 11, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:35,072 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:35,083 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:37,243 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:39,343 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 11:10:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:39,344 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 11:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:39,502 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 10:40:00+00:00: scheduled__2018-09-24T10:40:00+00:00, externally triggered: False> failed
+2021-05-26 06:25:39,529 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:10:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:20:00+00:00 [scheduled]>
+2021-05-26 06:25:39,533 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:25:39,534 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:39,536 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:39,537 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:20:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:10:00+00:00 [scheduled]>
+2021-05-26 06:25:39,543 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 11, 20, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:39,543 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:39,543 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 11, 10, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:39,544 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:39,552 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:41,756 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:43,832 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 11:20:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:43,833 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 11:10:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:43,933 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 10:50:00+00:00: scheduled__2018-09-24T10:50:00+00:00, externally triggered: False> failed
+2021-05-26 06:25:43,956 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:20:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:30:00+00:00 [scheduled]>
+2021-05-26 06:25:43,958 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:25:43,958 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:43,958 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:43,958 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:30:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:20:00+00:00 [scheduled]>
+2021-05-26 06:25:43,961 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 11, 30, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:43,961 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:43,961 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 11, 20, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:43,962 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:43,972 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:46,086 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:48,130 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 11:30:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:48,131 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 11:20:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:48,406 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 11:00:00+00:00: scheduled__2018-09-24T11:00:00+00:00, externally triggered: False> failed
+2021-05-26 06:25:48,432 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:30:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:40:00+00:00 [scheduled]>
+2021-05-26 06:25:48,434 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:25:48,434 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:48,434 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:48,434 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:40:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:30:00+00:00 [scheduled]>
+2021-05-26 06:25:48,439 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 11, 40, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:48,439 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:48,440 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 11, 30, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:48,440 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:48,447 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:50,531 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:52,742 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 11:40:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:52,742 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 11:30:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:52,883 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 11:10:00+00:00: scheduled__2018-09-24T11:10:00+00:00, externally triggered: False> failed
+2021-05-26 06:25:52,910 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:40:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:50:00+00:00 [scheduled]>
+2021-05-26 06:25:52,922 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:25:52,924 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:52,925 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:52,927 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 11:50:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:40:00+00:00 [scheduled]>
+2021-05-26 06:25:52,933 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 11, 50, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:52,933 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:52,933 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 11, 40, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:52,934 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:52,944 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T11:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:55,211 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:57,256 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 11:50:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:57,256 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 11:40:00+00:00 exited with status success for try_number 1
+2021-05-26 06:25:57,426 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 11:20:00+00:00: scheduled__2018-09-24T11:20:00+00:00, externally triggered: False> failed
+2021-05-26 06:25:57,449 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:50:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:00:00+00:00 [scheduled]>
+2021-05-26 06:25:57,451 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:25:57,452 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:25:57,452 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:25:57,452 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:00:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 11:50:00+00:00 [scheduled]>
+2021-05-26 06:25:57,456 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 12, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:25:57,457 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:57,457 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 11, 50, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:25:57,457 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:57,465 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:25:59,705 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T11:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:01,851 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 12:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:01,852 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 11:50:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:01,969 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 11:30:00+00:00: scheduled__2018-09-24T11:30:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:02,000 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:00:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:10:00+00:00 [scheduled]>
+2021-05-26 06:26:02,007 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:02,009 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:02,010 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:02,012 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:10:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:00:00+00:00 [scheduled]>
+2021-05-26 06:26:02,015 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 12, 10, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:02,016 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:02,016 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 12, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:02,016 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:02,026 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:04,326 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:06,459 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 12:10:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:06,459 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 12:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:06,607 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 11:40:00+00:00: scheduled__2018-09-24T11:40:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:06,631 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:10:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:20:00+00:00 [scheduled]>
+2021-05-26 06:26:06,634 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:06,634 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:06,635 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:06,635 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:20:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:10:00+00:00 [scheduled]>
+2021-05-26 06:26:06,639 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 12, 20, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:06,639 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:06,640 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 12, 10, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:06,640 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:06,650 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:08,879 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:11,009 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 12:20:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:11,010 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 12:10:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:11,162 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 11:50:00+00:00: scheduled__2018-09-24T11:50:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:11,193 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:20:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:30:00+00:00 [scheduled]>
+2021-05-26 06:26:11,198 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:11,199 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:11,201 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:11,202 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:30:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:20:00+00:00 [scheduled]>
+2021-05-26 06:26:11,207 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 12, 30, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:11,207 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:11,207 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 12, 20, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:11,208 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:11,218 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:13,701 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:16,006 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 12:30:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:16,007 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 12:20:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:16,161 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 12:00:00+00:00: scheduled__2018-09-24T12:00:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:16,197 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:30:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:40:00+00:00 [scheduled]>
+2021-05-26 06:26:16,202 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:16,204 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:16,206 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:16,207 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:40:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:30:00+00:00 [scheduled]>
+2021-05-26 06:26:16,211 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 12, 40, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:16,212 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:16,212 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 12, 30, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:16,212 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:16,221 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:18,325 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:20,387 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 12:40:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:20,388 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 12:30:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:20,631 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 12:10:00+00:00: scheduled__2018-09-24T12:10:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:20,678 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:40:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:50:00+00:00 [scheduled]>
+2021-05-26 06:26:20,687 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:20,690 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:20,694 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:20,695 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 12:50:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:40:00+00:00 [scheduled]>
+2021-05-26 06:26:20,698 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 12, 50, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:20,702 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:20,705 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 12, 40, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:20,706 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:20,729 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T12:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:23,152 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:25,309 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 12:50:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:25,310 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 12:40:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:25,455 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 12:20:00+00:00: scheduled__2018-09-24T12:20:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:25,492 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:50:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:00:00+00:00 [scheduled]>
+2021-05-26 06:26:25,496 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:25,497 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:25,498 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:25,500 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:00:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 12:50:00+00:00 [scheduled]>
+2021-05-26 06:26:25,509 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 13, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:25,510 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:25,510 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 12, 50, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:25,510 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:25,522 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:27,685 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T12:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:29,852 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 13:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:29,852 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 12:50:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:29,962 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 12:30:00+00:00: scheduled__2018-09-24T12:30:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:29,994 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:00:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:10:00+00:00 [scheduled]>
+2021-05-26 06:26:29,999 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:30,001 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:30,002 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:30,004 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:10:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:00:00+00:00 [scheduled]>
+2021-05-26 06:26:30,008 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 13, 10, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:30,008 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:30,008 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 13, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:30,008 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:30,018 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:32,060 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:34,120 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 13:10:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:34,121 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 13:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:34,276 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 12:40:00+00:00: scheduled__2018-09-24T12:40:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:34,303 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:10:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:20:00+00:00 [scheduled]>
+2021-05-26 06:26:34,307 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:34,309 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:34,311 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:34,313 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:20:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:10:00+00:00 [scheduled]>
+2021-05-26 06:26:34,316 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 13, 20, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:34,317 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:34,317 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 13, 10, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:34,317 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:34,326 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:36,480 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:38,544 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 13:20:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:38,545 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 13:10:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:38,676 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 12:50:00+00:00: scheduled__2018-09-24T12:50:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:38,697 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:20:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:30:00+00:00 [scheduled]>
+2021-05-26 06:26:38,700 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:38,700 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:38,700 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:38,701 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:30:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:20:00+00:00 [scheduled]>
+2021-05-26 06:26:38,704 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 13, 30, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:38,704 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:38,704 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 13, 20, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:38,705 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:38,714 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:40,871 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:20:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:43,248 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 13:30:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:43,249 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 13:20:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:43,404 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 13:00:00+00:00: scheduled__2018-09-24T13:00:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:43,435 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:30:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:40:00+00:00 [scheduled]>
+2021-05-26 06:26:43,440 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:43,442 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:43,443 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:43,445 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:40:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:30:00+00:00 [scheduled]>
+2021-05-26 06:26:43,450 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 13, 40, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:43,450 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:43,450 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 13, 30, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:43,450 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:43,461 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:45,856 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:30:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:48,254 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 13:40:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:48,255 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 13:30:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:48,389 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 13:10:00+00:00: scheduled__2018-09-24T13:10:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:48,418 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:40:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:50:00+00:00 [scheduled]>
+2021-05-26 06:26:48,425 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:48,427 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:48,428 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:48,429 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 13:50:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:40:00+00:00 [scheduled]>
+2021-05-26 06:26:48,437 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 13, 50, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:48,437 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:48,437 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 13, 40, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:48,438 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:48,446 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T13:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:50,708 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:40:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:52,962 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 13:50:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:52,962 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 13:40:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:53,198 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 13:20:00+00:00: scheduled__2018-09-24T13:20:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:53,231 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:50:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 14:00:00+00:00 [scheduled]>
+2021-05-26 06:26:53,236 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:53,245 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:53,247 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:53,249 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 14:00:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 13:50:00+00:00 [scheduled]>
+2021-05-26 06:26:53,255 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 14, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:53,255 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T14:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:53,256 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 13, 50, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:53,256 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:53,264 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T14:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:55,580 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T13:50:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:57,696 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 14:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:57,696 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 13:50:00+00:00 exited with status success for try_number 1
+2021-05-26 06:26:57,817 ERROR - Marking run <DagRun my_simple_dag @ 2018-09-24 13:30:00+00:00: scheduled__2018-09-24T13:30:00+00:00, externally triggered: False> failed
+2021-05-26 06:26:57,840 INFO - 2 tasks up for execution:
+	<TaskInstance: my_simple_dag.greet 2018-09-24 14:00:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 14:10:00+00:00 [scheduled]>
+2021-05-26 06:26:57,844 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 2 task instances ready to be queued
+2021-05-26 06:26:57,846 INFO - DAG my_simple_dag has 0/16 running and queued tasks
+2021-05-26 06:26:57,847 INFO - DAG my_simple_dag has 1/16 running and queued tasks
+2021-05-26 06:26:57,849 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag.say_Hi 2018-09-24 14:10:00+00:00 [scheduled]>
+	<TaskInstance: my_simple_dag.greet 2018-09-24 14:00:00+00:00 [scheduled]>
+2021-05-26 06:26:57,855 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='say_Hi', execution_date=datetime.datetime(2018, 9, 24, 14, 10, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:26:57,856 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T14:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:57,856 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag', task_id='greet', execution_date=datetime.datetime(2018, 9, 24, 14, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:26:57,856 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T14:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:26:57,866 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'say_Hi', '2018-09-24T14:10:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:27:00,351 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag', 'greet', '2018-09-24T14:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/test_dag.py']
+2021-05-26 06:27:02,577 INFO - Executor reports execution of my_simple_dag.say_Hi execution_date=2018-09-24 14:10:00+00:00 exited with status success for try_number 1
+2021-05-26 06:27:02,578 INFO - Executor reports execution of my_simple_dag.greet execution_date=2018-09-24 14:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:28:01,450 WARNING - DagFileProcessorManager (PID=16420) exited with exit code 1 - re-launching
+2021-05-26 06:28:01,459 INFO - Launched DagFileProcessorManager with pid: 21030
+2021-05-26 06:28:01,473 INFO - Configured default timezone Timezone('UTC')
+2021-05-26 06:30:01,408 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 06:34:58,614 INFO - 1 tasks up for execution:
+	<TaskInstance: my_simple_dag2.say_Hi 2021-05-25 00:00:00+00:00 [scheduled]>
+2021-05-26 06:34:58,616 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 1 task instances ready to be queued
+2021-05-26 06:34:58,617 INFO - DAG my_simple_dag2 has 0/16 running and queued tasks
+2021-05-26 06:34:58,617 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag2.say_Hi 2021-05-25 00:00:00+00:00 [scheduled]>
+2021-05-26 06:34:58,620 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag2', task_id='say_Hi', execution_date=datetime.datetime(2021, 5, 25, 0, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:34:58,620 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'say_Hi', '2021-05-25T00:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:34:58,628 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'say_Hi', '2021-05-25T00:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:35:00,551 INFO - Executor reports execution of my_simple_dag2.say_Hi execution_date=2021-05-25 00:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:35:00,655 INFO - 1 tasks up for execution:
+	<TaskInstance: my_simple_dag2.greet 2021-05-25 00:00:00+00:00 [scheduled]>
+2021-05-26 06:35:00,658 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 1 task instances ready to be queued
+2021-05-26 06:35:00,659 INFO - DAG my_simple_dag2 has 0/16 running and queued tasks
+2021-05-26 06:35:00,659 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag2.greet 2021-05-25 00:00:00+00:00 [scheduled]>
+2021-05-26 06:35:00,664 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag2', task_id='greet', execution_date=datetime.datetime(2021, 5, 25, 0, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:35:00,664 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'greet', '2021-05-25T00:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:35:00,675 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'greet', '2021-05-25T00:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:35:02,621 INFO - Executor reports execution of my_simple_dag2.greet execution_date=2021-05-25 00:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:35:02,638 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 06:35:02,646 INFO - Reset the following 1 orphaned TaskInstances:
+	<TaskInstance: my_simple_dag2.sleep_me 2021-05-25 00:00:00+00:00 [scheduled]>
+2021-05-26 06:35:02,689 INFO - 1 tasks up for execution:
+	<TaskInstance: my_simple_dag2.sleep_me 2021-05-25 00:00:00+00:00 [scheduled]>
+2021-05-26 06:35:02,691 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 1 task instances ready to be queued
+2021-05-26 06:35:02,691 INFO - DAG my_simple_dag2 has 0/16 running and queued tasks
+2021-05-26 06:35:02,691 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag2.sleep_me 2021-05-25 00:00:00+00:00 [scheduled]>
+2021-05-26 06:35:02,693 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag2', task_id='sleep_me', execution_date=datetime.datetime(2021, 5, 25, 0, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 2 and queue default
+2021-05-26 06:35:02,693 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'sleep_me', '2021-05-25T00:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:35:02,701 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'sleep_me', '2021-05-25T00:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:35:09,547 INFO - Executor reports execution of my_simple_dag2.sleep_me execution_date=2021-05-25 00:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:35:09,729 INFO - 1 tasks up for execution:
+	<TaskInstance: my_simple_dag2.respond 2021-05-25 00:00:00+00:00 [scheduled]>
+2021-05-26 06:35:09,730 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 1 task instances ready to be queued
+2021-05-26 06:35:09,730 INFO - DAG my_simple_dag2 has 0/16 running and queued tasks
+2021-05-26 06:35:09,730 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag2.respond 2021-05-25 00:00:00+00:00 [scheduled]>
+2021-05-26 06:35:09,743 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag2', task_id='respond', execution_date=datetime.datetime(2021, 5, 25, 0, 0, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 1 and queue default
+2021-05-26 06:35:09,744 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'respond', '2021-05-25T00:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:35:09,753 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'respond', '2021-05-25T00:00:00+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:35:11,693 INFO - Executor reports execution of my_simple_dag2.respond execution_date=2021-05-25 00:00:00+00:00 exited with status success for try_number 1
+2021-05-26 06:35:11,733 INFO - Marking run <DagRun my_simple_dag2 @ 2021-05-25 00:00:00+00:00: scheduled__2021-05-25T00:00:00+00:00, externally triggered: False> successful
+2021-05-26 06:37:34,592 INFO - 1 tasks up for execution:
+	<TaskInstance: my_simple_dag2.say_Hi 2021-05-26 06:37:33.844584+00:00 [scheduled]>
+2021-05-26 06:37:34,594 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 1 task instances ready to be queued
+2021-05-26 06:37:34,595 INFO - DAG my_simple_dag2 has 0/16 running and queued tasks
+2021-05-26 06:37:34,595 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag2.say_Hi 2021-05-26 06:37:33.844584+00:00 [scheduled]>
+2021-05-26 06:37:34,598 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag2', task_id='say_Hi', execution_date=datetime.datetime(2021, 5, 26, 6, 37, 33, 844584, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 4 and queue default
+2021-05-26 06:37:34,598 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'say_Hi', '2021-05-26T06:37:33.844584+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:37:34,605 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'say_Hi', '2021-05-26T06:37:33.844584+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:37:36,252 INFO - Executor reports execution of my_simple_dag2.say_Hi execution_date=2021-05-26 06:37:33.844584+00:00 exited with status success for try_number 1
+2021-05-26 06:37:36,308 INFO - 1 tasks up for execution:
+	<TaskInstance: my_simple_dag2.greet 2021-05-26 06:37:33.844584+00:00 [scheduled]>
+2021-05-26 06:37:36,311 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 1 task instances ready to be queued
+2021-05-26 06:37:36,313 INFO - DAG my_simple_dag2 has 0/16 running and queued tasks
+2021-05-26 06:37:36,314 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag2.greet 2021-05-26 06:37:33.844584+00:00 [scheduled]>
+2021-05-26 06:37:36,317 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag2', task_id='greet', execution_date=datetime.datetime(2021, 5, 26, 6, 37, 33, 844584, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 3 and queue default
+2021-05-26 06:37:36,317 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'greet', '2021-05-26T06:37:33.844584+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:37:36,326 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'greet', '2021-05-26T06:37:33.844584+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:37:38,197 INFO - Executor reports execution of my_simple_dag2.greet execution_date=2021-05-26 06:37:33.844584+00:00 exited with status success for try_number 1
+2021-05-26 06:37:38,266 INFO - 1 tasks up for execution:
+	<TaskInstance: my_simple_dag2.sleep_me 2021-05-26 06:37:33.844584+00:00 [scheduled]>
+2021-05-26 06:37:38,268 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 1 task instances ready to be queued
+2021-05-26 06:37:38,269 INFO - DAG my_simple_dag2 has 0/16 running and queued tasks
+2021-05-26 06:37:38,269 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag2.sleep_me 2021-05-26 06:37:33.844584+00:00 [scheduled]>
+2021-05-26 06:37:38,272 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag2', task_id='sleep_me', execution_date=datetime.datetime(2021, 5, 26, 6, 37, 33, 844584, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 2 and queue default
+2021-05-26 06:37:38,272 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'sleep_me', '2021-05-26T06:37:33.844584+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:37:38,280 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'sleep_me', '2021-05-26T06:37:33.844584+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:37:45,093 INFO - Executor reports execution of my_simple_dag2.sleep_me execution_date=2021-05-26 06:37:33.844584+00:00 exited with status success for try_number 1
+2021-05-26 06:37:45,381 INFO - 1 tasks up for execution:
+	<TaskInstance: my_simple_dag2.respond 2021-05-26 06:37:33.844584+00:00 [scheduled]>
+2021-05-26 06:37:45,386 INFO - Figuring out tasks to run in Pool(name=default_pool) with 128 open slots and 1 task instances ready to be queued
+2021-05-26 06:37:45,388 INFO - DAG my_simple_dag2 has 0/16 running and queued tasks
+2021-05-26 06:37:45,391 INFO - Setting the following tasks to queued state:
+	<TaskInstance: my_simple_dag2.respond 2021-05-26 06:37:33.844584+00:00 [scheduled]>
+2021-05-26 06:37:45,398 INFO - Sending TaskInstanceKey(dag_id='my_simple_dag2', task_id='respond', execution_date=datetime.datetime(2021, 5, 26, 6, 37, 33, 844584, tzinfo=Timezone('UTC')), try_number=1) to executor with priority 1 and queue default
+2021-05-26 06:37:45,398 INFO - Adding to queue: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'respond', '2021-05-26T06:37:33.844584+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:37:45,407 INFO - Executing command: ['airflow', 'tasks', 'run', 'my_simple_dag2', 'respond', '2021-05-26T06:37:33.844584+00:00', '--local', '--pool', 'default_pool', '--subdir', '/home/ubuntu/ML_cylynx_nlp/airflow/dags/__pycache__/test_dag.py']
+2021-05-26 06:37:47,132 INFO - Executor reports execution of my_simple_dag2.respond execution_date=2021-05-26 06:37:33.844584+00:00 exited with status success for try_number 1
+2021-05-26 06:37:47,167 INFO - Marking run <DagRun my_simple_dag2 @ 2021-05-26 06:37:33.844584+00:00: manual__2021-05-26T06:37:33.844584+00:00, externally triggered: True> successful
+2021-05-26 06:40:02,685 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 06:45:02,721 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 06:50:02,756 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 06:55:02,788 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:00:02,824 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:05:02,859 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:10:02,896 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:15:02,931 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:20:02,966 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:25:03,004 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:30:03,044 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:35:03,078 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:40:03,112 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:45:03,148 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:50:03,185 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 07:55:03,220 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:00:03,252 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:05:03,287 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:10:03,330 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:15:03,364 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:20:03,382 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:25:03,416 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:30:03,448 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:35:03,485 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:40:03,520 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:45:03,553 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:50:03,587 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 08:55:03,622 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:00:03,655 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:05:03,687 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:10:03,721 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:15:03,757 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:20:03,792 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:25:03,825 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:30:03,859 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:35:03,899 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:40:03,934 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:45:03,968 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:50:04,001 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 09:55:04,033 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:00:04,066 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:05:04,101 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:10:04,136 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:15:04,170 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:20:04,204 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:25:04,239 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:30:04,283 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:35:04,317 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:40:04,352 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:45:04,388 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:50:04,419 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 10:55:04,451 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:00:04,487 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:05:04,506 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:10:04,540 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:15:04,576 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:20:04,610 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:25:04,644 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:30:04,679 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:35:04,715 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:40:04,748 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:45:04,783 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:50:04,816 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 11:55:04,851 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:00:04,885 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:05:04,921 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:10:04,955 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:15:04,990 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:20:05,025 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:25:05,058 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:30:05,093 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:35:05,192 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:40:05,225 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:45:05,258 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:50:05,291 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 12:55:05,325 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:00:05,359 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:05:05,395 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:10:05,428 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:15:05,460 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:20:05,494 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:25:05,527 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:30:05,560 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:35:05,593 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:40:05,624 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:45:05,646 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:50:05,679 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 13:55:05,712 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 14:00:05,751 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 14:05:05,797 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 14:10:05,850 INFO - Resetting orphaned tasks for active dag runs
+2021-05-26 14:15:05,894 INFO - Resetting orphaned tasks for active dag runs
