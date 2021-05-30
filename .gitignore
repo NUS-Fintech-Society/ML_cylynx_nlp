@@ -14,3 +14,4 @@ prediction/models/ner-model.pt
 airflow/logs/*
 airflow/airflow-scheduler.*
 airflow/airflow-webserver.*
+database/data.csv
