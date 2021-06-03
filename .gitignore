@@ -15,3 +15,6 @@ airflow/logs/*
 airflow/airflow-scheduler.*
 airflow/airflow-webserver.*
 database/data.csv
+
+*.out
+*.jsonl
