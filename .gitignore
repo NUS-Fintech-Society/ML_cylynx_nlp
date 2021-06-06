@@ -17,4 +17,8 @@ airflow/airflow-webserver.*
 database/data.csv
 
 *.out
+*.
+
+toyDatabase.db
+toyDatabaseV2.db
 *.jsonl

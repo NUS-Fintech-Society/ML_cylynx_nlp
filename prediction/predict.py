@@ -86,7 +86,7 @@ class Predictor(object):
 
     def load_model_params(self):
         #TODO: Change this 
-        config_path = "./cfg.yaml"
+        config_path = "/home/ubuntu/ML_cylynx_nlp/cfg.yaml"
         return yaml.load(open(config_path), Loader=yaml.Loader)["model_config"]
 
 
