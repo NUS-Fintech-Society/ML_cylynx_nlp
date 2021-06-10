@@ -79,9 +79,7 @@ class Predictor(object):
         prob = softmax(sent_output, axis=1)
         prob_risk = [x[1] for x in prob]
         pred_risk = [100*i for i in prob_risk]
-        print(ner_output)
-        output = [{"ner":ner_out, "risk": i}
-                  for ner_out, i in zip(ner_output, pred_risk)]
+        output = {"ner":ner_output,"risk":pred_risk}
         return output
 
     def load_model_params(self):

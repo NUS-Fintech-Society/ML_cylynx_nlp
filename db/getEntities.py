@@ -6,52 +6,60 @@ import pandas as pd
 import logging
 from typing import Union
 
-# Placeholder for actual preprocess function
-def __preprocess(entityName: str) -> str: 
-    return entityName
+from utils import preprocessEntityName as __preprocess
 
-def __checkDatabase(database: str) -> None:
-    try: 
-        sqlite3.connect(database)
-    except: 
-        raise Exception("The given file name is not a sqlite database file")
-
-def toDatabase(df : pd.DataFrame, database: str) -> None: 
-    __checkDatabase(database)
-    assert 'EntityName' in df.columns
+def toDatabase(df : pd.DataFrame, database: str = "sqlite.db") -> None: 
+    assert 'entity_name' in df.columns
 
     con = sqlite3.connect(database)
     cur = con.cursor()
-    entityNames = [__preprocess(x) for x in df['EntityName']]
+    entityNames = [__preprocess(x) for x in df['entity_name']]
     
     for entity in entityNames:
-        cur.execute('SELECT * FROM Entity WHERE (EntityName=?)', (entity,))
+        cur.execute('SELECT * FROM entities WHERE (name=?)', (entity,))
         entry = cur.fetchone()
 
         if entry is None:
-            cur.execute('INSERT INTO Entity (EntityName, EntityProbability) VALUES(?, ?)', (entity, 0))
-            logging.info('New entry added: {}'.format('entity'))
+            cur.execute('INSERT INTO entities (name) VALUES(?)', (entity,))
+            logging.info('New entry added: {}'.format(entity))
         else:
             logging.info('Entry found')
     con.commit()
     con.close()
 
-def getEntity(entity: str, database: str) -> Union[None, float]:
-    __checkDatabase(database)
-
+def getEntityIdByName(entity_name: str, database: str = "sqlite.db") -> Union[None, int]:
     con = sqlite3.connect(database)
     cur = con.cursor()
-    cur.execute('SELECT * FROM Entity WHERE (EntityName=?)', (entity,))
+    cur.execute('SELECT * FROM entities where (name=?)', (entity_name,))
     entry = cur.fetchone()
     con.close()
-    return entry
+
+    if entry is not None: 
+        return entry[0]
+    else: 
+        logging.warn("Entity of name {} not found in entity table".format(entity_name))
+    return None
+
+def getEntityNameById(entity_id: int, database: str = "sqlite.db") -> Union[None, str]:
+    con = sqlite3.connect(database)
+    cur = con.cursor()
+    cur.execute('SELECT * FROM entities WHERE (entity_id=?)', (entity_id,))
+    entry = cur.fetchone()
+    con.close()
+    
+    if entry is not None: 
+        return entry[1]
+    else:
+        logging.warn("Entity Id {} not found in entity table".format(entity_id))
+        return None
 
 if __name__=='__main__':
-    d = {'EntityName': ["btc", "ether", "bitcoin", "somethingElse"]}
-    df = pd.DataFrame(data=d)
+    df = pd.read_csv('../output/output.csv')
 
-    db = 'toyDatabaseV2.db'
+    db = 'sqlite.db'
     toDatabase(df, db)
-    print(getEntity('bitcoin', db))
-    print(getEntity('somethingElse', db))
-    print(getEntity('BOB', db))
+    print(getEntityIdByName('bitcoin', db))
+    print(getEntityIdByName('ether', db))
+    print(getEntityIdByName('somethingElse', db))
+
+    print(getEntityNameById(14))

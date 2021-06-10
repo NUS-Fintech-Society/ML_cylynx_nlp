@@ -1,4 +1,4 @@
-from prediction import predict
+from prediction import predict #TODO: Change this to package import
 import pandas as pd
 import pytest
 import time
@@ -6,7 +6,7 @@ import time
 
 @pytest.fixture()
 def test_data_path():
-    return "./test/test_data.csv"
+    return "./tests/test_data.csv"
 
 
 def test_prediction_output_single():
@@ -29,6 +29,7 @@ def test_prediction_batch(test_data_path):
     end = time.time()
     print(
         f"Inference Time: {end-start} seconds to analyze {len(output)} documents ")
-    assert isinstance(output, list),"Batch output should be a list"
-    assert all([isinstance(i,dict) for i in output]), \
-        "All items in batch output should be a dictionary"
+    assert isinstance(output, dict),"Batch output should be a list"
+    assert "ner" in output.keys(),"Batch Output should contain ner output"
+    assert "risk" in output.keys(),"Batch Output should contain risk scores"
+

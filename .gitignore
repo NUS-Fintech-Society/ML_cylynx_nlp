@@ -19,6 +19,6 @@ database/data.csv
 *.out
 *.
 
-toyDatabase.db
-toyDatabaseV2.db
 *.jsonl
+output/
+*.db

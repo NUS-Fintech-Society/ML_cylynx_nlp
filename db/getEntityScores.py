@@ -1,71 +1,60 @@
 #!/usr/bin/env python
 import sqlite3
-import pandas as pd
 from datetime import datetime
+import pandas as pd
 
 import logging
 from typing import Union
 
-# Placeholder for actual preprocess function
-def __preprocess(entityId: str) -> str: 
-    return entityId
-
-# Placeholder for actual getScore function
-def __getScore(entityScore: float) -> float: 
-    return entityScore
-
-def __getTime() -> str:
-    return datetime.now().isoformat()
-
-def __checkDatabase(database: str) -> None:
-    try: 
-        sqlite3.connect(database)
-    except: 
-        raise Exception("The given file name is not a sqlite database file")
+from utils import preprocessEntityName as __preprocess
+from utils import preprocessTime as __preprocessTime
 
 def __deriveDataframe(map_df : pd.DataFrame) -> pd.DataFrame:
     '''
     Takes in a Dataframe with column names:
-    ArticleId
-    Entities
-    Risk Score
+    entity_name
+    risk
+    date_time
 
     and return a DataFrame with column names: 
-    EntityName
-    EntityScore (Averages of Risk Score)
+    entity_name
+    entity_score (Averages of Risk Score)
+    date_time 
     '''
-    ArticleIds = list(map_df['ArticleId'])
-    Entities = list(map_df['Entities'])
-    RiskScore = list(map_df['Risk Score'])
+    Entities = list(map_df['entity_name'])
+    RiskScore = list(map_df['risk'])
 
     tempDict = {}
-    returnDict = {'EntityName': [], 'EntityScore': []}
-    for idx, e in enumerate(Entities): 
-        for entity in e: 
-            scores = tempDict.get(entity, [])
-            scores.append(RiskScore[idx])
-            tempDict[entity] = scores
-            if entity not in returnDict['EntityName']:
-                returnDict['EntityName'].append(entity) 
+    returnDict = {'entity_name': [], 'entity_score': [], 'date_time': []}
+    for idx, entity in enumerate(Entities):
+        date_time = map_df['date_time'][idx].split(' ')[0]
+        scores = tempDict.get((entity, date_time), [])
 
-    for idx, e in enumerate(returnDict['EntityName']):
-        returnDict['EntityScore'].append(sum(tempDict[e]) / len(tempDict[e])) # TODO: Find a better way to do this
-    print(returnDict)
+        scores.append(RiskScore[idx])
+        tempDict[(entity, date_time)] = scores
+
+    for idx, (entity_name, date_time) in enumerate(tempDict.keys()):
+        entity_score = sum(tempDict[(entity_name, date_time)]) / len(tempDict[(entity_name, date_time)])
+        returnDict['entity_name'].append(entity_name)
+        returnDict['entity_score'].append(entity_score)
+        returnDict['date_time'].append(date_time)
+
     return pd.DataFrame.from_dict(returnDict)
 
 
-def toDatabase(df : pd.DataFrame, database: str) -> None: 
-    __checkDatabase(database)
-    assert 'EntityName' in df.columns
-    assert 'EntityScore' in df.columns
+def toDatabase(df : pd.DataFrame, database: str = "sqlite.db") -> None: 
+    assert 'entity_name' in df.columns
+    assert 'entity_score' in df.columns
+    assert 'date_time' in df.columns
 
     con = sqlite3.connect(database)
     cur = con.cursor()
-    entityNames = [__preprocess(x) for x in df['EntityName']]
-    entityScores = [__getScore(x) for x in df['EntityScore']]
+    entityNames = [__preprocess(x) for x in df['entity_name']]
+    entityScores = df['entity_score']
+    queryTime = df['date_time']
     
     for i, entity in enumerate(entityNames):
-        cur.execute('SELECT * FROM Entity WHERE (EntityName=?)', (entity,))
+        cur.execute('SELECT * FROM entities WHERE (name=?)', (entity,))
         entry = cur.fetchone()
 
         if entry is None:
@@ -74,45 +63,53 @@ def toDatabase(df : pd.DataFrame, database: str) -> None:
             logging.info('Entry found in Entity Table. Checking EntityScore Table...')
             
             entityId = entry[0]
-            cur.execute('SELECT * FROM EntityScore WHERE (EntityId=?)', (entityId,))
+            cur.execute('SELECT * FROM entity_scores WHERE (entity_id=?) AND (date_time=?)', (entityId, queryTime[i]))
             entry = cur.fetchone()
 
             if entry is None:
-                cur.execute('INSERT INTO EntityScore (EntityScoreAverage, Time, EntityId) VALUES(?, ?, ?)', (entityScores[i], __getTime(), entityId))
+                cur.execute('INSERT INTO entity_scores (entity_score, date_time, entity_id) VALUES(?, ?, ?)', (entityScores[i], queryTime[i], entityId))
                 logging.info('New entry added to EntityScore Table: {}'.format(entityId))
             else:
                 logging.info('Entry found') 
     con.commit()
     con.close()
 
-def getEntityScore(entity: str, database: str) -> Union[None, float]:
-    __checkDatabase(database)
-
+def getEntityScore(entity: str, database : str = "sqlite.db") -> Union[None, list]:
     con = sqlite3.connect(database)
     cur = con.cursor()
-    cur.execute('SELECT * FROM Entity WHERE (EntityName=?)', (entity,))
+    cur.execute('SELECT * FROM entities WHERE (name=?)', (entity,))
     entry = cur.fetchone()
     if entry is None:
-        logging.warn("No entity found in Entity Table")
+        logging.warn("No such entity found in Entity Table")
         con.close()
         return None
     else:
-        cur.execute('SELECT * FROM EntityScore WHERE (EntityId=?)', (entry[0],))
-        entry = cur.fetchone()
+        cur.execute('SELECT * FROM entity_scores WHERE (entity_id=?)', (entry[0],))
+        entry = cur.fetchall()
         con.close()
-        return entry[1]
+        return [(x[1], x[2]) for x in entry] if entry is not None else None
+
+def getEntityScoreAtTime(entity: str, time: str, database: str = "sqlite.db") -> Union[None, float]:
+    time = __preprocessTime(time)
+    results = getEntityScore(entity, database)
+    if results is None:
+        return None
+    else:
+        result = list(filter(lambda x: x[1] == time, results))
+        if len(result) == 1:
+            return result[0][0]
+        else:
+            logging.warn("Entity {} found but no score for given time".format(entity))
+            return None
 
 if __name__=='__main__':
-    d = {'EntityName': ["bitcoin", "somethingElse", "notInEntityTable"]}
-    # df = pd.DataFrame(data=d)
-    map_df = pd.DataFrame({"ArticleId": [19], "Entities": [["bitcoin", 'ether']], "Risk Score": [0.3]})
+    map_df = pd.read_csv("../output/output.csv")
     df = __deriveDataframe(map_df)
-    
-    db = 'toyDatabaseV2.db'
-    toDatabase(df, db)
-    print(getEntityScore('bitcoin', db))
-    print(getEntityScore('ether', db))
 
-    # print(getEntityScore('bitcoin', db))
-    # print(getEntityScore('somethingElse', db))
-    # print(getEntityScore('BOB', db))
+    db = 'sqlite.db'
+    toDatabase(df, db)
+    
+    print("Entity: bitcoin. Score: ", getEntityScore('bitcoin', db))
+    print("Entity: ether. Score: ", getEntityScore('ether', db))
+    print("Entity: somethingElse. Score: ", getEntityScore('somethingElse', db))
+    print("Entity: BOB. Score: ", getEntityScore('BOB', db))

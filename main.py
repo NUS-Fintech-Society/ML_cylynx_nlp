@@ -7,14 +7,21 @@ from tqdm import tqdm
 
 df = pd.read_csv("data/data.csv")
 df["text"] = df["title"] + " " + df["excerpt"].fillna("")
-inp = df["text"].tolist()
-output = []
 
-for i in tqdm(range(len(inp)//64)):
-    in_slice = inp[i*64:(i+1)*64]
-    out = predict(in_slice)
-    print(out)
-    break
-    output.extend(out)
-with open("output.jsonl", "w+", encoding="utf-8") as f:
-    json.dump(output, f)
+out_df = pd.DataFrame()
+original_cols = df.columns
+
+for i in tqdm(range(len(df)//500)):
+    new_df = df[i*500:(i+1)*500].copy()
+
+    text = new_df["text"].tolist()
+    output = predict(text)
+
+
+    new_df["ner"] = output["ner"]
+    new_df["risk"] = output["risk"]
+    new_df.dropna("ner",inplace =True)
+    new_df = new_df.explode("ner")
+    new_df["entity_name"],new_df["confidence"] = \
+        new_df["ner"].apply(lambda x:x["name"], x["confidecne"])
+    new_df.to_csv(f"output/output_{i}.csv",index=False)

@@ -23,5 +23,6 @@ def create_source(conn, source_name):
 
 
 if __name__ == '__main__':
-    sources = ["bitnewstoday", "coindesk", "cointelegraph", "cryptonews"]
+    sources = ["bitnewstoday", "coindesk",
+               "cointelegraph", "cryptonews", "cryptoslate"]
     populate_sources(sources)
