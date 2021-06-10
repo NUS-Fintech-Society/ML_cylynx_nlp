@@ -1,27 +1,40 @@
-import streamlit as st
 from prediction import predict
 
 import pandas as pd
 import json
 from tqdm import tqdm
 
-df = pd.read_csv("data/data.csv")
-df["text"] = df["title"] + " " + df["excerpt"].fillna("")
+from scraping.scrape import news_scrape_general
 
-out_df = pd.DataFrame()
-original_cols = df.columns
+def preprocess_df(df:pd.DataFrame)->pd.DataFrame:
+    df.dropna(subset = ["title"],inplace = True)
+    df["excerpt"].fillna("",inplace = True)
+    df["text"]  = df["title"] + " " + df["excerpt"]
+    return df
 
-for i in tqdm(range(len(df)//500)):
-    new_df = df[i*500:(i+1)*500].copy()
+def main():
+    df = news_scrape_general()
+    df = preprocess_df(df)
+    docs = df["text"].tolist()
+    
+    output = predict(docs)
+    df["risk"] = output["risk"]
+    
+    df["ner_output"] = output["ner"]
+    # ? Might want to save this df somewhere to retrain  
+    no_ent_df = df[df["ner_output"].apply(len)==0]
+    #TODO: Upload this df to articles table - No Duplicate articles 
+    df = df[df["ner_output"].apply(len)>0] 
+    
+    df = df.explode("ner_output")
+    df["entity_name"] = df["ner_output"].apply(lambda x:x["name"])
+    df["confidence"] = df["ner_output"].apply(lambda x:x["confidence"])
+    #TODO: Upload this df to entities table and entities score table
 
-    text = new_df["text"].tolist()
-    output = predict(text)
+
+    print(df.columns)
 
 
-    new_df["ner"] = output["ner"]
-    new_df["risk"] = output["risk"]
-    new_df.dropna("ner",inplace =True)
-    new_df = new_df.explode("ner")
-    new_df["entity_name"],new_df["confidence"] = \
-        new_df["ner"].apply(lambda x:x["name"], x["confidecne"])
-    new_df.to_csv(f"output/output_{i}.csv",index=False)
+if __name__ == "__main__":
+    main()
+    

@@ -4,17 +4,17 @@ import pandas as pd
 import argparse
 
 # Importing General Scraping Functions
-from scripts.bitnewstoday import bitnewstoday_scrape_general
-from scripts.coindesk import coindesk_scrape_general
-from scripts.cointelegraph import cointelegraph_scrape_general
-from scripts.cryptonews import cryptonews_scrape_general
-from scripts.cryptoslate import cryptoslate_scrape_general
+from .scripts.bitnewstoday import bitnewstoday_scrape_general
+from .scripts.coindesk import coindesk_scrape_general
+from .scripts.cointelegraph import cointelegraph_scrape_general
+from .scripts.cryptonews import cryptonews_scrape_general
+from .scripts.cryptoslate import cryptoslate_scrape_general
 
 # To change if more sources are added 
 sources = ["bitnewstoday","coindesk","cointelegraph","cryptonews","cryptoslate"]
 
 
-def news_scrape_general(start_date,end_date):
+def news_scrape_general(start_date=None,end_date=None):
     """
 
     start_date and end_date  are strings of format YYYY-MM-DD
@@ -26,7 +26,8 @@ def news_scrape_general(start_date,end_date):
     Returns:
         [type]: [description]
     """
-
+    if not start_date and not end_date:
+        start_date,end_date = get_today()
     start_datetime = datetime.strptime(start_date,"%Y-%m-%d")
     end_datetime = datetime.strptime(end_date,"%Y-%m-%d")
     
@@ -40,13 +41,16 @@ def news_scrape_general(start_date,end_date):
 def save_scraped_data(df,name,dir_name="./scraping/data/"):
     df.to_csv(dir_name+name,index=False)
 
+def get_today():
+    start_date = datetime.today() - timedelta(hours = 24)
+    start_date = start_date.strftime("%Y-%m-%d")
+    end_date = datetime.today()
+    end_date = end_date.strftime("%Y-%m-%d")
+    return start_date,end_date
 def main(args):
     if not args.start_date:
         #If no Start Date, there will be no end date arg as well
-        start_date = datetime.today() - timedelta(hours = 24)
-        start_date = start_date.strftime("%Y-%m-%d")
-        end_date = datetime.today()
-        end_date = end_date.strftime("%Y-%m-%d")
+        start_date,end_date = get_today()
     else: 
         start_date = args.start_date
         end_date = args.end_date
@@ -57,7 +61,7 @@ def main(args):
         
 
 
-
+#! This is deprecated, should not work after using relative imports, use main.py instead
 if __name__ == "__main__":
     # Script will save data in a .csv form if run using command line
     parser  = argparse.ArgumentParser(description='Script to Scrape News Sources and save as .csv')
