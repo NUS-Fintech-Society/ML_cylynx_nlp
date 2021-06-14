@@ -5,6 +5,8 @@ import pandas as pd
 import datetime
 from datetime import date
 
+#? I think this file should be redundant with the new main.py file outside this directory
+
 def main(): # Will run for today
     end_date = date.today().strftime("%Y-%m-%d")
     start_date = (date.today() - datetime.timedelta(days = 1)).strftime("%Y-%m-%d")
