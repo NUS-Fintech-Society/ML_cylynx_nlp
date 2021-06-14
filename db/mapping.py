@@ -13,6 +13,7 @@ def __checkDatabase(database: str) -> None:
     except:
         raise Exception("The given file name is not a sqlite database file")
 
+
 def read_data() -> pd.DataFrame():
     df0 = pd.read_csv("../output/output_0.csv")
     df1 = pd.read_csv("../output/output_1.csv")
@@ -25,7 +26,7 @@ def read_data() -> pd.DataFrame():
     df8 = pd.read_csv("../output/output_8.csv")
 
     df = pd.concat([df0, df1, df2, df3, df4, df5,
-                df6, df7, df8], ignore_index=True)
+                    df6, df7, df8], ignore_index=True)
     return df
 
 
@@ -39,7 +40,7 @@ def initiate_mapping(database: str, df: pd.DataFrame()) -> None:
         row = df.iloc[i]
         article = (row['title'], row['excerpt'], row['date_time'],
                    row['article_url'], row['risk'], row['source'])
-        article_id = create_article(con, article)
+        article_id = create_article(con, cur, article)
 
         ner_list = json.loads(row['ner'].replace("\'", "\""))
 

@@ -22,13 +22,17 @@ def main():
     
     df["ner_output"] = output["ner"]
     # ? Might want to save this df somewhere to retrain  
+    #TODO: Call Article Function
     no_ent_df = df[df["ner_output"].apply(len)==0]
-    #TODO: Upload this df to articles table - No Duplicate articles 
+    
+    
     df = df[df["ner_output"].apply(len)>0] 
     
     df = df.explode("ner_output")
     df["entity_name"] = df["ner_output"].apply(lambda x:x["name"])
     df["confidence"] = df["ner_output"].apply(lambda x:x["confidence"])
+    
+    
     #TODO: Upload this df to entities table and entities score table
 
 

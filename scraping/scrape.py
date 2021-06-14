@@ -4,11 +4,11 @@ import pandas as pd
 import argparse
 
 # Importing General Scraping Functions
-from .scripts.bitnewstoday import bitnewstoday_scrape_general
-from .scripts.coindesk import coindesk_scrape_general
-from .scripts.cointelegraph import cointelegraph_scrape_general
-from .scripts.cryptonews import cryptonews_scrape_general
-from .scripts.cryptoslate import cryptoslate_scrape_general
+from scripts.bitnewstoday import bitnewstoday_scrape_general
+from scripts.coindesk import coindesk_scrape_general
+from scripts.cointelegraph import cointelegraph_scrape_general
+from scripts.cryptonews import cryptonews_scrape_general
+from scripts.cryptoslate import cryptoslate_scrape_general
 
 # To change if more sources are added 
 sources = ["bitnewstoday","coindesk","cointelegraph","cryptonews","cryptoslate"]
@@ -55,13 +55,12 @@ def main(args):
         start_date = args.start_date
         end_date = args.end_date
     df = news_scrape_general(start_date,end_date)
-    if args.name:
-        save_scraped_data(df,args.name)
-    return df
+    name = start_date + "-to-"+end_date
+    save_scraped_data(df,name)
+
         
 
 
-#! This is deprecated, should not work after using relative imports, use main.py instead
 if __name__ == "__main__":
     # Script will save data in a .csv form if run using command line
     parser  = argparse.ArgumentParser(description='Script to Scrape News Sources and save as .csv')
@@ -69,7 +68,6 @@ if __name__ == "__main__":
                         nargs="?")
     parser.add_argument("end_date",type=str,help="End Date of Scraping in YYYY-MM-DD format",
                         nargs="?")
-    parser.add_argument("--name","-n",help="Name of saved file, leave blank to not save the file")
     args = parser.parse_args()
     df = main(args)
     
