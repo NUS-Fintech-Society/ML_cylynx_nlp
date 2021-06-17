@@ -1,0 +1,16 @@
+--find-links https://download.pytorch.org/whl/torch_stable.html
+
+requests==2.18.4
+Flask==2.0.0
+pandas==1.1.5
+numpy==1.19.5
+torch==1.7.1+cpu #Install lighterweight cpu only torch
+flair==0.8.0.post1
+simpletransformers==0.51.10
+scipy==1.5.4
+pyyaml>=3.1.2
+beautifulsoup4==4.9.3
+pytest==6.2.4
+streamlit==0.82.0
+requests==2.18.4
+plotly==4.14.3

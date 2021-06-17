@@ -3,7 +3,7 @@
 __pycache__/
 reddit_old.py
 Untitled.ipynb
-*.txt
+
 *_samples.csv
 *.ipynb_checkpoints/
 misc/
@@ -17,7 +17,6 @@ airflow/airflow-webserver.*
 database/data.csv
 
 *.out
-*.
 
 *.jsonl
 output/

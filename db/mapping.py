@@ -6,14 +6,6 @@ import logging
 from setup import create_connection
 from sqlite3 import Error
 
-
-def __checkDatabase(database: str) -> None:
-    try:
-        sqlite3.connect(database)
-    except:
-        raise Exception("The given file name is not a sqlite database file")
-
-
 def read_data() -> pd.DataFrame():
     df0 = pd.read_csv("../output/output_0.csv")
     df1 = pd.read_csv("../output/output_1.csv")
@@ -30,9 +22,7 @@ def read_data() -> pd.DataFrame():
     return df
 
 
-def initiate_mapping(database: str, df: pd.DataFrame()) -> None:
-    __checkDatabase(database)
-
+def initiate_mapping(df : pd.DataFrame, database : str = 'sqlite.db') -> None:
     con = sqlite3.connect(database)
     cur = con.cursor()
 
@@ -44,7 +34,7 @@ def initiate_mapping(database: str, df: pd.DataFrame()) -> None:
 
         ner_list = json.loads(row['ner'].replace("\'", "\""))
 
-        for each in ner_list:  # for each entity
+        for each in ner_list:  # for each entity TODO: No longer needed since df is in exploded form i.e. each row in df corresponds to one row in mapping table
 
             # Retrieve entity id
             entity_name = each['name']
@@ -57,7 +47,7 @@ def initiate_mapping(database: str, df: pd.DataFrame()) -> None:
 
             else:
                 logging.info('Entity found')
-                mapData = (entity_id, article_id)
+                mapData = (entity_id, article_id) # TODO: Change to mapData = (entity_id, article_id, entity_probability)
 
                 code = ''' INSERT INTO mapping (entity_id, article_id)
               VALUES(?, ?) '''

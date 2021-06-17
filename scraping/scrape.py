@@ -4,11 +4,11 @@ import pandas as pd
 import argparse
 
 # Importing General Scraping Functions
-from scripts.bitnewstoday import bitnewstoday_scrape_general
-from scripts.coindesk import coindesk_scrape_general
-from scripts.cointelegraph import cointelegraph_scrape_general
-from scripts.cryptonews import cryptonews_scrape_general
-from scripts.cryptoslate import cryptoslate_scrape_general
+from .scripts.bitnewstoday import bitnewstoday_scrape_general
+from .scripts.coindesk import coindesk_scrape_general
+from .scripts.cointelegraph import cointelegraph_scrape_general
+from .scripts.cryptonews import cryptonews_scrape_general
+from .scripts.cryptoslate import cryptoslate_scrape_general
 
 # To change if more sources are added 
 sources = ["bitnewstoday","coindesk","cointelegraph","cryptonews","cryptoslate"]

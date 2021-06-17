@@ -6,6 +6,9 @@ from tqdm import tqdm
 
 from scraping.scrape import news_scrape_general
 
+from db.getEntities import toDatabase as toEntitiesTable
+from db.getEntityScores import toDatabase as toEntityScoresTable
+
 def preprocess_df(df:pd.DataFrame)->pd.DataFrame:
     df.dropna(subset = ["title"],inplace = True)
     df["excerpt"].fillna("",inplace = True)
@@ -33,12 +36,9 @@ def main():
     df["confidence"] = df["ner_output"].apply(lambda x:x["confidence"])
     
     
-    #TODO: Upload this df to entities table and entities score table
-
-
-    print(df.columns)
+    toEntitiesTable(df) #Upload df to entites table
+    toEntityScoresTable(df) # Upload df to entity_scores table
 
 
 if __name__ == "__main__":
     main()
-    

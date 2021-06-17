@@ -49,7 +49,9 @@ if __name__ == '__main__':
                                         FOREIGN KEY (source)
                                             REFERENCES sources (name) 
                                     ); """
-    sql_create_entities_table = """ CREATE TABLE IF NOT EXISTS entities (
+                                    
+                                    #TODO: Add additional Field isValid boolean NOT NULL
+    sql_create_entities_table = """ CREATE TABLE IF NOT EXISTS entities ( 
                                         entity_id integer PRIMARY KEY,
                                         name text NOT NULL
                                     ); """
