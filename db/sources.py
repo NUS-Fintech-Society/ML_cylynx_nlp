@@ -8,7 +8,7 @@ class SourceType(Enum):
 
 
 def populate_sources(source_names):
-    conn = create_connection('sqlite.db')
+    conn = create_connection('sqlite2.db')
     for source in source_names:
         create_source(conn, source)
     conn.close()

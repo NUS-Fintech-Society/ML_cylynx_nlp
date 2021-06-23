@@ -30,7 +30,7 @@ def create_table(conn, create_table_sql):
 
 
 if __name__ == '__main__':
-    database = "sqlite.db"
+    database = "sqlite2.db"
 
     sql_create_sources_table = """ CREATE TABLE IF NOT EXISTS sources (
                                         source_id integer PRIMARY KEY,
@@ -46,17 +46,17 @@ if __name__ == '__main__':
                                         article_url text,
                                         risk real,
                                         source text,
+                                        no_entity_flag boolean,
                                         FOREIGN KEY (source)
                                             REFERENCES sources (name) 
                                     ); """
-                                    
-                                    #TODO: Add additional Field isValid boolean NOT NULL
+
     sql_create_entities_table = """ CREATE TABLE IF NOT EXISTS entities ( 
                                         entity_id integer PRIMARY KEY,
-                                        name text NOT NULL
+                                        name text NOT NULL,
+                                        isValid integer NOT NULL
                                     ); """
 
-    
     sql_create_entity_score_table = """ CREATE TABLE IF NOT EXISTS entity_scores (
                                             entity_score_id integer PRIMARY KEY,
                                             entity_score real, 
@@ -75,8 +75,8 @@ if __name__ == '__main__':
                                             FOREIGN KEY (article_id)
                                                 REFERENCES articles (article_id)
                                         ); """
-    
-    conn = create_connection("sqlite.db")
+
+    conn = create_connection("sqlite2.db")
 
     if conn is not None:
         # create source table

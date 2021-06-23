@@ -29,3 +29,11 @@ Code Structure
 
 `main.py` - Main script which will run at a scheduled daily interval by airflow
 
+## Running apps using Docker
+
+The app is able to work using Docker-compose to access both the streamlit app and the neo4j instance. The `ML_Cylynx_NLP` directory is mounted as a volume to the docker container
+
+`docker-compose up -d`
+
+`localhost:8501` - Streamlit App
+`localhost:7474` - Neo4J Browser 

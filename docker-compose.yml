@@ -4,5 +4,20 @@ services:
         build: .
         ports:
             - "8501:8501"
+        volumes:
+            - "$PWD/:/usr/src/app"
     neo4j:
-        image:
+        image: "neo4j:latest"
+        ports:
+            - "7474:7474"
+            - "7687:7687"
+        environment:
+            - "NEO4J_AUTH=neo4j/1234"
+            - "NEO4J_ACCEPT_LICENSE_AGREEMENT=yes"
+            - "NEO4J_dbms_ssl_policy_bolt_client__auth=none"
+            - "NEO4J_dbms_connector_bolt_listen__address=0.0.0.0:7687"
+        volumes:
+            - "$HOME/neo4j/data:/data"
+            - "$HOME/neo4j/logs:/logs"
+            - "$HOME/neo4j/import:/var/lib/neo4j/import"
+            - "$HOME/neo4j/plugins:/plugins"

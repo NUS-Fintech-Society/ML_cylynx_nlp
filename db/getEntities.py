@@ -6,21 +6,25 @@ import pandas as pd
 import logging
 from typing import Union
 
-from utils import preprocessEntityName as __preprocess
+from .utils.utils import preprocessEntityNames as __preprocessNames
+from .utils.utils import preprocessEntityName as __preprocessName
 
 def toDatabase(df : pd.DataFrame, database: str = "sqlite.db") -> None: 
-    assert 'entity_name' in df.columns
+    assert 'entity_name' in df.columns # TODO: see if this is still the column name
 
     con = sqlite3.connect(database)
     cur = con.cursor()
-    entityNames = [__preprocess(x) for x in df['entity_name']]
+    entities = __preprocessNames(df['entity_name'].tolist())
+
+    entityNames = [x[0] for x in entities]
+    entityValid = [x[1] for x in entities] # True if valid
     
-    for entity in entityNames:
+    for i, entity in enumerate(entityNames):
         cur.execute('SELECT * FROM entities WHERE (name=?)', (entity,))
         entry = cur.fetchone()
 
         if entry is None:
-            cur.execute('INSERT INTO entities (name) VALUES(?)', (entity,))
+            cur.execute('INSERT INTO entities (name, isValid) VALUES(?, ?)', (entity, entityValid[i]))
             logging.info('New entry added: {}'.format(entity))
         else:
             logging.info('Entry found')
@@ -30,6 +34,8 @@ def toDatabase(df : pd.DataFrame, database: str = "sqlite.db") -> None:
 def getEntityIdByName(entity_name: str, database: str = "sqlite.db") -> Union[None, int]:
     con = sqlite3.connect(database)
     cur = con.cursor()
+
+    entity_name = __preprocessName(entity_name)
     cur.execute('SELECT * FROM entities where (name=?)', (entity_name,))
     entry = cur.fetchone()
     con.close()
@@ -43,6 +49,7 @@ def getEntityIdByName(entity_name: str, database: str = "sqlite.db") -> Union[No
 def getEntityNameById(entity_id: int, database: str = "sqlite.db") -> Union[None, str]:
     con = sqlite3.connect(database)
     cur = con.cursor()
+
     cur.execute('SELECT * FROM entities WHERE (entity_id=?)', (entity_id,))
     entry = cur.fetchone()
     con.close()
@@ -56,7 +63,7 @@ def getEntityNameById(entity_id: int, database: str = "sqlite.db") -> Union[None
 if __name__=='__main__':
     df = pd.read_csv('../output/output.csv')
 
-    db = 'sqlite.db'
+    db = 'sqlite3.db'
     toDatabase(df, db)
     print(getEntityIdByName('bitcoin', db))
     print(getEntityIdByName('ether', db))
