@@ -60,6 +60,45 @@ def getEntityNameById(entity_id: int, database: str = "sqlite.db") -> Union[None
         logging.warn("Entity Id {} not found in entity table".format(entity_id))
         return None
 
+def getEntityNames():
+    con = sqlite3.connect(database)
+    cur = con.cursor()
+
+    #Find Entities which have more than 10 occurences
+    query = """ SELECT s.*,e.name FROM "entity_scores" s 
+    INNER JOIN "entities" e ON e.entity_id = s.entity_id
+    GROUP BY s.entity_id
+    HAVING COUNT(s.entity_id) > 10 
+    """
+    df = pd.read_sql(query,con)
+    #df = df.T.drop_duplicates().T # Remove duplicate column from join 
+    return df["name"].tolist()
+
+
+#TODO: Return EntityId: Name given some preset criteria
+def getEntityData(database: str = "db/sqlite.db"):
+    con = sqlite3.connect(database)
+    cur = con.cursor()
+
+    #Find Entities which have more than 10 occurences
+    query = """ SELECT s.*,e.name FROM "entity_scores" s 
+    INNER JOIN "entities" e ON e.entity_id = s.entity_id
+    GROUP BY s.entity_id
+    HAVING COUNT(s.entity_id) > 10 
+    """
+    df = pd.read_sql(query,con)
+    #df = df.T.drop_duplicates().T # Remove duplicate column from join 
+    print(df)
+    id_map = {row["entity_id"]:row["name"] for _,row in df.iterrows()}
+    ids = tuple(df["entity_id"].tolist()) # To process as SQL Query
+
+    query = "SELECT * FROM entity_scores WHERE " \
+        "entity_id IN {}".format(ids)
+    data_df = pd.read_sql(query,con)
+    
+    data_df["name"] = data_df["entity_id"].map(id_map)
+    return data_df
+
 if __name__=='__main__':
     df = pd.read_csv('../output/output.csv')
 

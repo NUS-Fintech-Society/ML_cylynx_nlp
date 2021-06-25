@@ -15,7 +15,10 @@ def preprocess_df(df: pd.DataFrame) -> pd.DataFrame:
     df["text"] = df["title"] + " " + df["excerpt"]
     return df
 
+# Warning: Current code will lead to undesired behavior if re-run on the same set of articles
+# Need to implement a check to not reinsert duplicate articles for this to not happen
 
+# Code doesn't throw error, but correctness has not been checked. 
 def main():
     df = news_scrape_general()
     df = preprocess_df(df)
@@ -23,27 +26,20 @@ def main():
 
     output = predict(docs)
     df["risk"] = output["risk"]
-
     df["ner_output"] = output["ner"]
 
     # ? Might want to save this df somewhere to retrain
     no_ent_df = df[df["ner_output"].apply(len) == 0]
     df = df[df["ner_output"].apply(len) > 0]
-    # df['confidence'] = df['ner_output'].apply(lambda x: x['confidence']) TODO: Delete this
 
-    df.to_csv('/home/ubuntu/ML_cylynx_nlp/output/original_output.csv', index=False)
-    # # df = pd.read_csv('/home/ubuntu/ML_cylynx_nlp/output/original_output.csv', header=0)  # TODO: There's some problem if we read from csv
-    print(df.head())
+    exploded_df = df.explode("ner_output")
+    exploded_df["entity_name"] = exploded_df["ner_output"].apply(lambda x: x["name"])
 
-    # toArticleEntityMappingTable(df, 1, database='/home/ubuntu/ML_cylynx_nlp/db/sqlite2.db')
-    # toArticleEntityMappingTable(no_ent_df, 0, database='sqlite2.db')
+    toEntitiesTable(exploded_df, database='/home/ubuntu/ML_cylynx_nlp/sqlite_test.db')
+    toEntityScoresTable(exploded_df, database='/home/ubuntu/ML_cylynx_nlp/sqlite_test.db')
 
-    df = df.explode("ner_output")
-    df["entity_name"] = df["ner_output"].apply(lambda x: x["name"])
-
-    # toEntitiesTable(df, database='/home/ubuntu/ML_cylynx_nlp/db/sqlite2.db')      # Upload df to entites table
-    print(df.head())
-    toEntityScoresTable(df, database='/home/ubuntu/ML_cylynx_nlp/db/sqlite2.db')  # Upload df to entity_scores table
+    toArticleEntityMappingTable(df, 1, database='/home/ubuntu/ML_cylynx_nlp/sqlite_test.db')
+    toArticleEntityMappingTable(no_ent_df, 0, database='/home/ubuntu/ML_cylynx_nlp/sqlite_test.db')
 
 if __name__ == "__main__":
     main()

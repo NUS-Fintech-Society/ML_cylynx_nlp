@@ -8,6 +8,7 @@ services:
             - "$PWD/:/usr/src/app"
     neo4j:
         image: "neo4j:latest"
+        tty: true
         ports:
             - "7474:7474"
             - "7687:7687"

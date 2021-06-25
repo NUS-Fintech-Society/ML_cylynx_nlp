@@ -1,5 +1,5 @@
 import streamlit as st
-import app_utils
+from db.getEntities import getEntityData
 import pandas as pd
 import plotly.express as px
 # import seaborn as sns
@@ -7,7 +7,7 @@ import plotly.express as px
 @st.cache
 def load_data():
     # Function wrapper required for caching
-    df = app_utils.fetch_data()
+    df = getEntityData()
     df["date_time"] = pd.to_datetime(df["date_time"])
     ent_names = df["name"].unique()
     return df,ent_names
@@ -45,24 +45,3 @@ st.plotly_chart(single_entity_chart(df,entity_name))
 st.subheader("Multiple Entity Visualisation")
 entity_names = st.multiselect("Select Entities:",options = ent_names)
 st.plotly_chart(multiple_entity_chart(df,entity_names))
-
-
-
-
-
-st.markdown(
-    """
-    - [ ] Code to group entities with the same names together
-    - [ ] Preprocessing Functions to better filter out unwanted items
-    - [ ] Blacklist - Can put this as part of the app?
-    - [ ] Threshold Tuning?
-    - [ ] Airflow Automation
-        - Can this be done without having to always turn on the VM and the specific time?
-    - [ ] Add Neo4J Database
-    - [ ] Docker and Docker Compose
-    (?) 
-    - [] CI/CD Pipeline - NER and Sentiment Scoring
-        - More labelling of data?
-    """
-    
-)

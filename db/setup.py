@@ -70,13 +70,14 @@ if __name__ == '__main__':
                                             mapping_id integer PRIMARY KEY,
                                             entity_id integer, 
                                             article_id integer,
+                                            entity_probability real,
                                             FOREIGN KEY (entity_id)
                                                 REFERENCES entities (entity_id),
                                             FOREIGN KEY (article_id)
                                                 REFERENCES articles (article_id)
                                         ); """
 
-    conn = create_connection("sqlite2.db")
+    conn = create_connection("sqlite_test.db")
 
     if conn is not None:
         # create source table

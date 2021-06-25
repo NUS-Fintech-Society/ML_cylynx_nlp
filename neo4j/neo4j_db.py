@@ -1,5 +1,5 @@
 from py2neo import Graph
-from py2neo.bulk import create_nodes, create_relationships
+from py2neo.bulk import merge_nodes, merge_relationships
 from py2neo.data import Relationship
 import pandas as pd
 
@@ -9,30 +9,37 @@ import pandas as pd
 df_cols = ["article_id","title","excerpt","date_time","article_url",
            "risk","source"]
 
-def create_articles(g, df: pd.DataFrame):
+
+def connect_graph():
+    return Graph("bolt://localhost:7687", auth=("neo4j", "1234"))
+
+def clear_graph():
+    g = connect_graph()
+    g.run("MATCH (e:Entity)-[r]-(n:Article) DELETE r")
+    g.run("MATCH (r:Entity) MATCH (n:Article) DELETE n,r")
+
+def create_articles(df: pd.DataFrame):
+    g= connect_graph()
     data = df.to_dict("records")
-    create_nodes(g.auto(),data,labels={"Article"})
+    merge_nodes(g.auto(),data,merge_key=("Article","article_id"),labels={"Article"})
 
-def create_entities(g,df: pd.DataFrame):
-
+def create_entities(df: pd.DataFrame):
+    g= connect_graph()
     data = df.to_dict("records")
-    print(data)
-    create_nodes(g.auto(),data,labels={"Entity"})
+    merge_nodes(g.auto(),data,merge_key=("Entity","entity_id"),labels={"Entity"})
 
-def match_article_entity(g,df:pd.DataFrame):
+def match_article_entity(df:pd.DataFrame):
     """
     3 Columns: entity_id, entity_name, article_id 
     """
+    g= connect_graph()
     data =[]
     for row in df.itertuples():
-        entry = ((row.entity_id),{"test":1},row.article_id)
+        entry = (row.article_id,dict(),row.entity_id)
         data.append(entry)
-    print([len(i) for i in data])
-    create_relationships(
-        g.auto(),data,rel_type="MENTIONED",start_node_key=("Entity","entity_id"),
-        end_node_key=("Article","article_id"))
-    print("done")
-
+    merge_relationships(
+        g.auto(),data,merge_key=("MENTIONED"), start_node_key=("Article","article_id"),
+        end_node_key=("Entity","entity_id"))
 
 
 
@@ -40,20 +47,17 @@ def match_article_entity(g,df:pd.DataFrame):
 if __name__ == "__main__":
 
     graph = Graph("bolt://localhost:7687", auth=("neo4j", "1234"))
-    graph.run("MATCH (e:Entity)-[r]-(n:Article) DELETE r")
-    graph.run("MATCH (r:Entity) MATCH (n:Article) DELETE n,r")
 
 
     article_df = pd.read_csv("test_article.csv")
     entity_df = pd.read_csv("test_entities.csv")
     
-    create_articles(graph, article_df)
-    create_entities(graph, entity_df)
+    create_articles(article_df)
+    create_entities( entity_df)
     match_df = pd.read_csv("test_match.csv")
-    match_article_entity(graph,match_df)
+    match_article_entity(match_df)
     a = graph.nodes.match("Article",article_id= 1).first()
     b = graph.nodes.match("Entity",entity_id=1).first()
-    print(a,b)
 
     rel = Relationship(b,"MENTIONED_BY",a)
     # graph.create(rel)

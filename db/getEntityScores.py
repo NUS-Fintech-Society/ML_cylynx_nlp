@@ -5,7 +5,6 @@ import pandas as pd
 import logging
 from typing import Union
 
-from .utils.utils import preprocessEntityNames as __preprocessNames
 from .utils.utils import preprocessEntityName as __preprocessName
 from .utils.utils import preprocessTime as __preprocessTime
 
@@ -23,14 +22,12 @@ def __deriveDataframe(map_df : pd.DataFrame) -> pd.DataFrame:
     entity_score (Averages of Risk Score)
     date_time 
     '''
-    # Entities = list(map_df['entity_name'])
-    # RiskScore = list(map_df['risk'])
 
     tempDict = {}
     returnDict = {'entity_name': [], 'entity_score': [], 'date_time': []}
 
     for row in map_df.itertuples():
-        date_time = row.date_time
+        date_time = row.date_time.strftime('%Y-%m-%d')
         entity = row.entity_name
 
         scores = tempDict.get((entity, date_time), [])
@@ -52,26 +49,19 @@ def toDatabase(df : pd.DataFrame, database: str = "sqlite.db") -> None:
     assert 'risk' in df.columns
 
     df = __deriveDataframe(df)
-
-    assert 'entity_score' in df.columns
-
     con = sqlite3.connect(database)
     cur = con.cursor()
     df['entity_name'] = df['entity_name'].apply(__preprocessName)
 
-    # entityNames = __preprocessNames(df['entity_name'])
-    # entityScores = df['entity_score']
-    # queryTime = df['date_time']
-
     for row in df.itertuples():
-        entity = row.entity_name
-        queryTime = row.date_time
-        
-    # for i, entity in enumerate(entityNames):
-        entry = getEntityScoreAtTime(entity, queryTime[i])
+        entity_name = row.entity_name
+        query_time = row.date_time
+        entity_score = row.entity_score
+
+        entry = getEntityScoreAtTime(entity_name, query_time, database)
         if entry is None:
-            entityId = getEntityIdByName(entity)
-            cur.execute('INSERT INTO entity_scores (entity_score, date_time, entity_id) VALUES(?, ?, ?)', (entityScores[i], queryTime[i], entityId))
+            entityId = getEntityIdByName(entity_name, database)
+            cur.execute('INSERT INTO entity_scores (entity_score, date_time, entity_id) VALUES(?, ?, ?)', (entity_score, query_time, entityId))
             logging.info('New entry added to EntityScore Table: {}'.format(entityId))
         else:
             logging.info('Entry found') 
@@ -82,7 +72,7 @@ def getEntityScore(entity: str, database : str = "sqlite.db") -> Union[None, lis
     con = sqlite3.connect(database)
     cur = con.cursor()
 
-    entityId = getEntityIdByName(entity)
+    entityId = getEntityIdByName(entity, database)
     if entityId is not None:
         cur.execute('SELECT * FROM entity_scores WHERE (entity_id=?)', (entityId,))
         entry = cur.fetchall()
@@ -94,10 +84,13 @@ def getEntityScoreAtTime(entity: str, time: str, database: str = "sqlite.db") ->
     results = getEntityScore(entity, database)
     if results is not None:
         result = list(filter(lambda x: x[1] == time, results))
+        assert len(result) == 0 or len(result) == 1
         if len(result) == 1:
             return result[0][0]
         else:
             logging.warn("Entity {} found but no score for given time".format(entity))
+            logging.warn("Number of Found Results: ", len(result))
+            logging.warn("Queried Time: ", time)
             return None
 
 if __name__=='__main__':
