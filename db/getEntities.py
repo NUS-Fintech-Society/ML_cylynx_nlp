@@ -60,9 +60,19 @@ def getEntityNameById(entity_id: int, database: str = "sqlite.db") -> Union[None
         logging.warn("Entity Id {} not found in entity table".format(entity_id))
         return None
 
-def getEntityNames():
+def getEntityIdsNames(ids,database:str ="sqlite.db") -> pd.DataFrame:
+    ids = tuple(ids)
     con = sqlite3.connect(database)
     cur = con.cursor()
+    query = "SELECT * FROM entities WHERE " \
+        "entity_id IN {}".format(ids)
+    df = pd.read_sql_query(query,con)
+    return df.loc[:,["entity_id","name"]]
+
+def getValidEntityIdsNames(database: str = "db/sqlite.db") -> pd.DataFrame: 
+    con = sqlite3.connect(database)
+    cur = con.cursor()
+    # TODO: Add in probability of entity 
 
     #Find Entities which have more than 10 occurences
     query = """ SELECT s.*,e.name FROM "entity_scores" s 
@@ -71,12 +81,10 @@ def getEntityNames():
     HAVING COUNT(s.entity_id) > 10 
     """
     df = pd.read_sql(query,con)
-    #df = df.T.drop_duplicates().T # Remove duplicate column from join 
-    return df["name"].tolist()
+    return df.loc[:,["entity_id","name"]]
 
 
-#TODO: Return EntityId: Name given some preset criteria
-def getEntityData(database: str = "db/sqlite.db"):
+def getValidEntityData(database: str = "db/sqlite.db"):
     con = sqlite3.connect(database)
     cur = con.cursor()
 

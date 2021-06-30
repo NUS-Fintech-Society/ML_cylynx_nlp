@@ -24,13 +24,16 @@ def create_articles(df: pd.DataFrame):
     merge_nodes(g.auto(),data,merge_key=("Article","article_id"),labels={"Article"})
 
 def create_entities(df: pd.DataFrame):
+    """
+    2 Columns: entity_id, name 
+    """
     g= connect_graph()
     data = df.to_dict("records")
     merge_nodes(g.auto(),data,merge_key=("Entity","entity_id"),labels={"Entity"})
 
 def match_article_entity(df:pd.DataFrame):
     """
-    3 Columns: entity_id, entity_name, article_id 
+    2 Columns: entity_id, article_id 
     """
     g= connect_graph()
     data =[]
@@ -44,20 +47,20 @@ def match_article_entity(df:pd.DataFrame):
 
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    graph = Graph("bolt://localhost:7687", auth=("neo4j", "1234"))
+#     graph = Graph("bolt://localhost:7687", auth=("neo4j", "1234"))
 
 
-    article_df = pd.read_csv("test_article.csv")
-    entity_df = pd.read_csv("test_entities.csv")
+#     article_df = pd.read_csv("test_article.csv")
+#     entity_df = pd.read_csv("test_entities.csv")
     
-    create_articles(article_df)
-    create_entities( entity_df)
-    match_df = pd.read_csv("test_match.csv")
-    match_article_entity(match_df)
-    a = graph.nodes.match("Article",article_id= 1).first()
-    b = graph.nodes.match("Entity",entity_id=1).first()
+#     create_articles(article_df)
+#     create_entities( entity_df)
+#     match_df = pd.read_csv("test_match.csv")
+#     match_article_entity(match_df)
+#     a = graph.nodes.match("Article",article_id= 1).first()
+#     b = graph.nodes.match("Entity",entity_id=1).first()
 
-    rel = Relationship(b,"MENTIONED_BY",a)
-    # graph.create(rel)
+#     rel = Relationship(b,"MENTIONED_BY",a)
+#     graph.create(rel)

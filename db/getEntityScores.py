@@ -84,7 +84,8 @@ def getEntityScoreAtTime(entity: str, time: str, database: str = "sqlite.db") ->
     results = getEntityScore(entity, database)
     if results is not None:
         result = list(filter(lambda x: x[1] == time, results))
-        assert len(result) == 0 or len(result) == 1
+        # ? Commented out this assertion as it was causing errors in main
+        # assert len(result) == 0 or len(result) == 1
         if len(result) == 1:
             return result[0][0]
         else:

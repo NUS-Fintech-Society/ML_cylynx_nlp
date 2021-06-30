@@ -37,3 +37,4 @@ The app is able to work using Docker-compose to access both the streamlit app an
 
 `localhost:8501` - Streamlit App
 `localhost:7474` - Neo4J Browser 
+`localhost:7687` - Cypher Shell - To Connect to Graph Database
