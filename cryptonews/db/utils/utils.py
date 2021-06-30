@@ -3,7 +3,7 @@ import pandas as pd
 
 from typing import List, Tuple, Dict
 
-def mapping(array: List[str], mapping_csv : str = '/home/ubuntu/ML_cylynx_nlp/db/utils/mapping.csv') -> List[str]:
+def mapping(array: List[str], mapping_csv : str = './util_files/mapping.csv') -> List[str]:
     """
     Takes in an array of entity names and mapping definitions and apply rule
     E.g. maps BTC, bitcoin => bitcoin
@@ -20,7 +20,7 @@ def mapping(array: List[str], mapping_csv : str = '/home/ubuntu/ML_cylynx_nlp/db
     return list(map(lambda x: mapping[x] if x in mapping else x, array))
 
 
-def blacklist(array: List[str], blacklist_csv: str = '/home/ubuntu/ML_cylynx_nlp/db/utils/blacklist.csv') -> List[Tuple[str, bool]]:
+def blacklist(array: List[str], blacklist_csv: str = './util_files/blacklist.csv') -> List[Tuple[str, bool]]:
     """
     Takes in an array of entity names and definitions of blacklisted entities 
     and apply rule

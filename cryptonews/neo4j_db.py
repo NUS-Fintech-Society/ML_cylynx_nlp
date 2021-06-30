@@ -3,14 +3,9 @@ from py2neo.bulk import merge_nodes, merge_relationships
 from py2neo.data import Relationship
 import pandas as pd
 
-# https://py2neo.org/2021.1/bulk/index.html
 
 
-df_cols = ["article_id","title","excerpt","date_time","article_url",
-           "risk","source"]
-
-
-def connect_graph():
+def connect_graph(): #? Maybe use a decorator?
     return Graph("bolt://localhost:7687", auth=("neo4j", "1234"))
 
 def clear_graph():
@@ -44,9 +39,22 @@ def match_article_entity(df:pd.DataFrame):
         g.auto(),data,merge_key=("MENTIONED"), start_node_key=("Article","article_id"),
         end_node_key=("Entity","entity_id"))
 
+def update_valid_entities(entity_ids):
+    """
+    Set valid: true for entity nodes that fulfil a certain criteria
+    """
+    g = connect_graph()
+    for idx in entity_ids:
+        node = g.nodes.match("Entity",entity_id=idx).first()
+        if node:
+            node["valid"] = True
+            g.push(node)
 
-
-
+def merge_nodes(id1,id2):
+    """
+    If 2 nodes point to the same entity, use this function to combine them
+    """
+    pass
 # if __name__ == "__main__":
 
 #     graph = Graph("bolt://localhost:7687", auth=("neo4j", "1234"))

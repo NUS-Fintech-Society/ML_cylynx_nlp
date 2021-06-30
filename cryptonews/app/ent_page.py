@@ -1,5 +1,5 @@
 import streamlit as st
-from .db.getEntities import getValidEntityData
+from ..db.getEntities import getValidEntityData
 import pandas as pd
 import plotly.express as px
 

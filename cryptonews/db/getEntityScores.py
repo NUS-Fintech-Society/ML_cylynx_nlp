@@ -89,9 +89,9 @@ def getEntityScoreAtTime(entity: str, time: str, database: str = "sqlite.db") ->
         if len(result) == 1:
             return result[0][0]
         else:
-            logging.warn("Entity {} found but no score for given time".format(entity))
-            logging.warn("Number of Found Results: ", len(result))
-            logging.warn("Queried Time: ", time)
+            # logging.warn("Entity {} found but no score for given time".format(entity))
+            # logging.warn("Number of Found Results: ", len(result))
+            # logging.warn("Queried Time: ", time)
             return None
 
 if __name__=='__main__':

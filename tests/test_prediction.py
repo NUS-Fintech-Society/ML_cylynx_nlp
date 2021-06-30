@@ -1,4 +1,4 @@
-from prediction import predict #TODO: Change this to package import
+from cryptonews.prediction import predict #TODO: Change this to package import
 import pandas as pd
 import pytest
 import time

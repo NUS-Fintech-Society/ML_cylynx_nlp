@@ -84,7 +84,7 @@ def getValidEntityIdsNames(database: str = "db/sqlite.db") -> pd.DataFrame:
     return df.loc[:,["entity_id","name"]]
 
 
-def getValidEntityData(database: str = "db/sqlite.db"):
+def getValidEntityData(database: str = "./cryptonews/db/sqlite.db"):
     con = sqlite3.connect(database)
     cur = con.cursor()
 
