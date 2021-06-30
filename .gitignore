@@ -9,8 +9,8 @@ Untitled.ipynb
 misc/
 scraping/data/
 
-prediction/models/sent_model/pytorch_model.bin
-prediction/models/ner-model.pt
+*/prediction/models/sent_model/pytorch_model.bin
+*/prediction/models/ner-model.pt
 airflow/logs/*
 airflow/airflow-scheduler.*
 airflow/airflow-webserver.*
