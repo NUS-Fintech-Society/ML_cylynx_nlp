@@ -24,7 +24,7 @@ def news_split(test_size=0.3):
         if len(labels) == 0:
             continue
         for label in labels:
-            label[2] = "Entity"
+            label[2] = "ORG"
 
     train, test = train_test_split(
         all_data, test_size=test_size, random_state=42)
@@ -52,11 +52,13 @@ def news_split(test_size=0.3):
             test_str += "\n"
         test_str += "\n"  # Add newline after each article extract
 
-    text_file = open(data_path + "news_train_sep.conll", "w", encoding="utf-8")
+    text_file = open(
+        data_path + "baseline_news_train_sep.conll", "w", encoding="utf-8")
     text_file.write(train_str)
     text_file.close()
 
-    text_file = open(data_path + "news_test_sep.conll", "w", encoding="utf-8")
+    text_file = open(data_path + "baseline_news_test_sep.conll",
+                     "w", encoding="utf-8")
     text_file.write(test_str)
     text_file.close()
 

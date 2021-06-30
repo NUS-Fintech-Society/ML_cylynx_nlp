@@ -2,6 +2,17 @@
 
 This project was conducted by NUS Fintech Society and Cylynx to create a dashboard to predict the risk scores of entities in the cryptocurrency space. This can help organisations to at a glance view the history of security threats that exchanges/cryptocurrencies have experienced
 
+## NER Model Training
+1081 Articles were scraped from various online crypto news sites, and crypto entities (like coins and exchanges) in these articles were manually tagged. 
+
+A 70-30 split was done into training and test sets, with the NER model being trained using Flair NLP.
+
+Results by class for test set:
+
+| Tag Name | True Positives | False Positives | False Negatives | Precision | Recall | F1 Score |
+|:--------:|:--------------:|:---------------:|:---------------:|:---------:|:------:|:--------:|
+|  Entity  |       490      |       141       |       141       |   0.7765  | 0.8099 |  0.7929  |
+
 ## Quickstart
 
 To run the application, use 
