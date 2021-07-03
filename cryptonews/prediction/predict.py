@@ -2,16 +2,15 @@ from flair.data import Sentence
 from flair.models import SequenceTagger
 from simpletransformers.classification import ClassificationModel, ClassificationArgs
 from scipy.special import softmax
-import yaml
+from cryptonews.config import config
 
 
 class Predictor(object):
 
-    def __init__(self,):
+    def __init__(self,config):
 
-        config = self.load_model_params()
-        ner_model_path = config.get("ner_model_path", "")
-        sent_model_path = config.get("sent_model_path", "")
+        ner_model_path = config.ner_model_path
+        sent_model_path = config.sent_model_path
         self.ner_model = self.load_ner_model(ner_model_path)
         self.sent_model = self.load_sent_model(sent_model_path)
 
@@ -82,19 +81,13 @@ class Predictor(object):
         output = {"ner":ner_output,"risk":pred_risk}
         return output
 
-    def load_model_params(self):
-        #TODO: Change this 
-        config_path = "/home/ubuntu/ML_cylynx_nlp/cfg.yaml"
-        return yaml.load(open(config_path), Loader=yaml.Loader)["model_config"]
-
-
 def predict(data):
     """
     General Predict Function that can be used to perform inference
     Parameters:
         data (str) or List[str]: data to be analysed 
     """
-    predictor = Predictor()
+    predictor = Predictor(config.model_config)
     if isinstance(data, str):
         return predictor.predict_single(data)
     elif isinstance(data, list):

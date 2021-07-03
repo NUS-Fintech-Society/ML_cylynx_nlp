@@ -1,3 +1,4 @@
 model_config:
-  ner_model_path: "/home/ubuntu/ML_cylynx_nlp/cryptonews/prediction/models/ner-model.pt"
-  sent_model_path: "/home/ubuntu/ML_cylynx_nlp/cryptonews/prediction/models/sent_model/"
+  ner_model_path: "./cryptonews/prediction/models/ner-model.pt"
+  sent_model_path: "./cryptonews/prediction/models/sent_model/"
+db_path: "./sqlite.db"
