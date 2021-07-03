@@ -50,7 +50,7 @@ def update_valid_entities(entity_ids):
             node["valid"] = True
             g.push(node)
 
-def merge_nodes(id1,id2):
+def merge_entity_nodes(id1,id2):
     """
     If 2 nodes point to the same entity, use this function to combine them
     """

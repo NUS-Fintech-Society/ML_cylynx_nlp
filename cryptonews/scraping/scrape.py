@@ -10,6 +10,7 @@ from .scripts.cointelegraph import cointelegraph_scrape_general
 from .scripts.cryptonews import cryptonews_scrape_general
 from .scripts.cryptoslate import cryptoslate_scrape_general
 
+from loguru import logger 
 # To change if more sources are added 
 sources = ["bitnewstoday","coindesk","cointelegraph","cryptonews","cryptoslate"]
 
@@ -32,8 +33,11 @@ def news_scrape_general(start_datetime, end_datetime):
     # news_df = [scraper(start_datetime,end_datetime) for scraper in scrapers]
     news_df = []
     for scraper, source in zip(scrapers,sources):
-        print(f"Scraping {source}")
-        news_df.append(scraper(start_datetime, end_datetime))
+        logger.info(f"Scraping {source}")
+        try:
+            news_df.append(scraper(start_datetime, end_datetime))
+        except:
+            logger.warning(f'Scraping of {source} failed')
     news_df = pd.concat(news_df)
     return news_df
 
