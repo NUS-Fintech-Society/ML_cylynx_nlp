@@ -25,3 +25,12 @@ def getArticlesFromIds(ids,database:str ="sqlite.db") -> pd.DataFrame:
     df = pd.read_sql_query(query,con)
     return df
 
+def getArticleData(entity_id,threshold,database):
+    con = sqlite3.connect(database)
+    query = """ 
+    SELECT a.* FROM "mapping" m
+    INNER JOIN "articles" a ON m.article_id = a.article_id 
+    WHERE m.entity_id = {} AND a.risk >= {}""".format(entity_id,threshold)
+
+    df = pd.read_sql(query,con)
+    return df

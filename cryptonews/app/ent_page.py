@@ -3,12 +3,15 @@ from ..db.getEntities import getValidEntityData
 import pandas as pd
 import plotly.express as px
 
+from ..config import config
+DB_PATH = config.db_path
 
 def app():
+    
     @st.cache
     def load_data():
         # Function wrapper required for caching
-        df = getValidEntityData()
+        df = getValidEntityData(DB_PATH)
         df["date_time"] = pd.to_datetime(df["date_time"])
         ent_names = df["name"].unique()
         return df,ent_names

@@ -15,7 +15,7 @@ pages = {
 
 #Navigation
 page_selections = list(pages.keys())
-choice = st.sidebar.radio("App Page: ",page_selections)
+choice = st.sidebar.radio("Pages: ",page_selections)
 page = pages[choice]
 page.app()
 

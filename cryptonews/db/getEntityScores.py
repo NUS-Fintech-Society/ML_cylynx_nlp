@@ -94,6 +94,13 @@ def getEntityScoreAtTime(entity: str, time: str, database: str = "sqlite.db") ->
             # logging.warn("Queried Time: ", time)
             return None
 
+def getScoresDateRange(database:str):
+    con = sqlite3.connect(database)
+    query = 'SELECT date_time FROM "entity_scores"'
+    
+    return pd.read_sql(query, con)['date_time'].tolist() 
+
+
 if __name__=='__main__':
     map_df = pd.read_csv("../output/output.csv")
     df = __deriveDataframe(map_df)
